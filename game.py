@@ -29,7 +29,8 @@ class Board:
         h4 = Coin(x=40, y=30, is_heads=True)
 
         self.coins = [t1, t2, t3, t4, h1, h2, h3, h4]
-        self.highlighted = random.sample(self.coins, 1)[0]
+        self.current_coin_index = 0
+        self.highlighted = self.coins[0]
 
     def __str__(self):
         result = ""
@@ -55,4 +56,9 @@ class Board:
           line = "".join(line)
           result += line + "\n"
         return result
+
+    def select_next_coin(self):
+        self.current_coin_index = (self.current_coin_index + 1) % len(self.coins)
+        self.highlighted = self.coins[self.current_coin_index]
+
 
