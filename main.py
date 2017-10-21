@@ -24,6 +24,12 @@ def loop():
         if char is '\t':
           print("next coin")
           board.select_next_coin()
+        if char is '\n':
+          print("select coin")
+          board.select_current_coin()
+        if char is '\r':
+          print("select coin")
+          board.select_current_coin()
 
 board = Board()
 print(board)

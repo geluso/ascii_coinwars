@@ -1,4 +1,5 @@
 import random
+from collections import defaultdict
 
 class Coin:
     def __init__(self, is_heads=False, kind="s", x=0, y=0):
@@ -13,10 +14,14 @@ class Coin:
             result = result.upper()
         return result
 
+    def __repr__(self):
+        return f"{str(self)} ({self.x},{self.y})"
+
 class Board:
-    def __init__(self, width=50, height=40):
-        self.width = width
-        self.height = height
+    def __init__(self, rows=50, cols=50):
+        self.cells = defaultdict(lambda: defaultdict(lambda: " "))
+        self.rows = rows
+        self.cols = cols
 
         t1 = Coin(x=10, y=10)
         t2 = Coin(x=20, y=10)
@@ -32,33 +37,69 @@ class Board:
         self.current_coin_index = 0
         self.highlighted = self.coins[0]
 
+        self.selected_coin = None
+
+    def set_board_cells(self):
+        result = ""
+        for col in range(self.cols):
+          self.cells[0][col] = "="
+          self.cells[self.rows - 1][col] = "="
+
+        for row in range(self.rows):
+            self.cells[row][0] = "|"
+            self.cells[row][self.cols - 1] = "|"
+
+        for row in range(1, self.rows - 1):
+          for col in range(1, self.cols - 1):
+            self.cells[row][col] = " "
+
+    def set_coin_cells(self):
+      for coin in self.coins:
+          row = coin.y
+          col = coin.x
+          self.cells[row][col] = str(coin)
+
+          if (coin is self.highlighted):
+              self.cells[row][col - 1] = "("
+              self.cells[row][col + 1] = ")"
+
+          if (coin is self.selected_coin):
+              self.cells[row][col - 1] = "["
+              self.cells[row][col + 1] = "]"
+
     def __str__(self):
-        result = ""
-        result += "=" * self.width + "\n"
-        for i in range(1, self.height-1):
-            line = "|" + " " * (self.width - 2) + "|" + "\n"
-            result += line
-        result += "=" * self.width + "\n"
-
-        lines = result.split("\n")
-        for coin in self.coins:
-            line = list(lines[coin.y])
-            line[coin.x] = str(coin)
-
-            if (coin is self.highlighted):
-                line[coin.x - 1] = "("
-                line[coin.x + 1] = ")"
-
-            lines[coin.y] = line
+        self.set_board_cells()
+        self.set_coin_cells()
 
         result = ""
-        for line in lines:
-          line = "".join(line)
-          result += line + "\n"
+        for row in range(0, self.rows):
+          for col in range(0, self.cols):
+            result += self.cells[row][col]
+          result += "\n"
+
         return result
 
     def select_next_coin(self):
-        self.current_coin_index = (self.current_coin_index + 1) % len(self.coins)
+        self.increment_current_count_index()
+        if (self.get_current_count() is self.selected_coin):
+            self.increment_current_count_index()
         self.highlighted = self.coins[self.current_coin_index]
+
+    def increment_current_count_index(self):
+        self.current_coin_index = (self.current_coin_index + 1) % len(self.coins)
+
+    def get_current_count(self):
+        return self.coins[self.current_coin_index]
+
+    def select_current_coin(self):
+        self.selected_coin = self.coins[self.current_coin_index]
+
+    def reset_selections(self):
+        self.selected_coin = None
+        self.current_coin_index = 0
+        self.highlighted = self.coins[self.current_coin_index]
+
+    def draw_path(self, p0, p1):
+        pass
 
 
