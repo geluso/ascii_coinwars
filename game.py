@@ -111,6 +111,11 @@ class Board:
       self.path_y0 = y0
       self.path_x1 = x1
       self.path_y1 = y1
+      if x1 < x0:
+        self.path_x0 = x1
+        self.path_y0 = y1
+        self.path_x1 = x0
+        self.path_y1 = y0
 
     def clear(self):
       self.selected_coin = None
@@ -125,6 +130,53 @@ class Board:
       self.path_y1 = -1
 
     def draw_path(self):
+      dy = self.path_y1 - self.path_y0
+      dx = self.path_x1 - self.path_x0
+
+      if dx is 0:
+        self.draw_vertical_path()
+      elif dy is 0:
+        self.draw_horizontal_path()
+      elif dy < 0 and dx > 0:
+        self.draw_top_right_path()
+      elif dy > 0 and dx > 0:
+        self.draw_bottom_left_path()
+
+    def draw_vertical_path(self):
+      print("vert")
+      minn = min(self.path_y0, self.path_y1)
+      maxx = max(self.path_y0, self.path_y1)
+      for yy in range(minn, maxx):
+        self.cells[yy][self.path_x0] = "."
+
+    def draw_horizontal_path(self):
+      print("horz")
+      left = min(self.path_x0, self.path_x1)
+      right = max(self.path_x0, self.path_x1)
+      for xx in range(left, right):
+        self.cells[self.path_y0][xx] = "."
+
+    def draw_top_right_path(self):
+      print("top right path")
+      miny = min(self.path_y0, self.path_y1)
+      maxy = max(self.path_y0, self.path_y1)
+      left = min(self.path_x0, self.path_x1)
+      right = max(self.path_x0, self.path_x1)
+      slope = (maxy - miny) // (left - right)
+      print("LR", left, right + 1)
+      for xx in range(left, right + 1):
+        print("slope", 0, slope)
+        for yy in range(0, abs(slope)):
+          xdiff = xx - left
+          row = maxy + xdiff * slope - yy
+          col = xx
+          print("xdiff", xdiff, "row", row)
+          self.cells[row][col] = "."
+
+    def draw_bottom_right_path(self):
+      print("bot right path")
+
+    def old_draw_path(self):
       row = self.path_y0
       col = self.path_x0
 
@@ -134,7 +186,7 @@ class Board:
       if dx is 0:
         slope = math.inf
       else:
-        slope = dy // dx
+        slope = int(math.ceil(dy / dx))
 
       print("slope:", slope)
 
@@ -146,18 +198,19 @@ class Board:
       if self.path_y1 < self.path_y0:
         offy = -1
 
-      print(self.path_x0, self.path_x1 + offx)
+      print("coll:", self.path_x0, self.path_x1 + offx)
       for coll in range(self.path_x0, self.path_x1 + offx):
         if slope is math.inf:
-          print("row:", self.path_y0, self.path_y1)
+          print("row1:", self.path_y0, self.path_y1)
           for roww in range(self.path_y0, self.path_y1, offy):
             print(roww, coll)
             self.cells[roww][coll] = "."
         else:
-          for roww in range(slope, offy):
+          print("sloppy", slope, offy)
+          for roww in range(0, slope + 1, offy):
             coldiff = coll - self.path_x0
             yy = roww + self.path_y0 + slope * coldiff
-            print(roww, coll)
+            print("row2:", yy, coll)
             self.cells[yy][coll] = "."
 
 
