@@ -26,6 +26,13 @@ def loop():
             sys.exit()
         if char is '\t':
           board.select_next_coin()
+          coin = board.selected_coin
+          if coin:
+              board.path_x0 = coin.roundX()
+              board.path_y0 = coin.roundY()
+              board.path_x1 = board.cursorx
+              board.path_y1 = board.cursory
+
         if char is '\r':
           board.select_current_coin()
           coin = board.selected_coin
