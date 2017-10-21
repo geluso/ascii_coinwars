@@ -9,6 +9,19 @@ class Coin:
         self.x = x
         self.y = y
 
+    def roundX(self):
+        return round(self.x)
+    def roundY(self):
+        return round(self.y)
+
+    # apply_force 33 50 8
+    def apply_force(self, dx, dy, magnitude):
+      dx = dx / 100
+      dy = dy / 100
+      for _ in range(magnitude):
+          self.x += dx
+          self.y += dy
+
     def __str__(self):
         result = self.kind
         if (self.is_heads):
@@ -65,8 +78,8 @@ class Board:
 
     def set_coin_cells(self):
       for coin in self.coins:
-          row = coin.y
-          col = coin.x
+          row = coin.roundY()
+          col = coin.roundX()
           self.cells[row][col] = str(coin)
 
           if (coin is self.highlighted):

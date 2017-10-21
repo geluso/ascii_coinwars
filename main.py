@@ -13,6 +13,8 @@ def getchar():
   return ch
 
 def loop():
+    last_dx, last_dy, last_force = None, None, None
+
     while True:
         print(board)
         print("Commands: (tab) next coin (p) set path (c) clear (x) exit")
@@ -38,6 +40,19 @@ def loop():
           board.set_path(x0, y0, x1, y1)
         if char is 'c':
           board.clear()
+        if char is 'f':
+          coin = board.highlighted
+          if coin:
+              dx, dy, force = [int(n) for n in input("input (dx dy force): ").split(" ")]
+              last_dx, last_dy, last_force = dx, dy, force
+              coin.apply_force(dx, dy, force)
+        if char is '.':
+              coin.apply_force(last_dx, last_dy, last_force)
+        if char is ' ':
+          coin = board.selected_coin
+          if coin:
+            coin.apply_force(270, 8)
+          
 
 board = Board()
 print(board)
