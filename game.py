@@ -182,7 +182,24 @@ class Board:
             current_y -= 1
 
     def draw_bottom_right_path(self):
-      print("bot right path")
+      miny = min(self.path_y0, self.path_y1)
+      maxy = max(self.path_y0, self.path_y1)
+      left = min(self.path_x0, self.path_x1)
+      right = max(self.path_x0, self.path_x1)
+      fslope = (maxy - miny) / (left - right)
+      slope = (maxy - miny) // (left - right)
+
+      current_y = miny
+      for xx in range(left, right + 1):
+
+        xprogress = (xx - left) / (right - left)
+        y_spread = maxy - miny
+        yy_coord = miny + xprogress * y_spread
+
+        self.cells[current_y][xx] = "."
+        while current_y < yy_coord:
+            self.cells[current_y][xx] = "."
+            current_y += 1
 
     def old_draw_path(self):
       row = self.path_y0
