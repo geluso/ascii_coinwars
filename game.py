@@ -176,6 +176,7 @@ class Board:
         y_spread = maxy - miny
         yy_coord = maxy - xprogress * y_spread
 
+        self.cells[current_y][xx] = "."
         while current_y > yy_coord:
             self.cells[current_y][xx] = "."
             current_y -= 1
