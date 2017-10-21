@@ -134,6 +134,11 @@ class Board:
       self.path_y1 = -1
 
     def draw_path(self):
+      # is the line going left?
+      if self.path_x1 < self.path_x0:
+          self.path_x0, self.path_x1 = self.path_x1, self.path_x0
+          self.path_y0, self.path_y1 = self.path_y1, self.path_y0
+
       dy = self.path_y1 - self.path_y0
       dx = self.path_x1 - self.path_x0
 
