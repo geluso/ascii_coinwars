@@ -29,17 +29,21 @@ class Board:
         self.path_x1 = 0
         self.path_y1 = 0
 
+        cc = Coin(x=25, y=20)
+
         t1 = Coin(x=10, y=10)
         t2 = Coin(x=20, y=10)
         t3 = Coin(x=30, y=10)
         t4 = Coin(x=40, y=10)
 
         h1 = Coin(x=10, y=30, is_heads=True)
+        hh1 = Coin(x=19, y=29, is_heads=True)
+        hhh1 = Coin(x=19, y=31, is_heads=True)
         h2 = Coin(x=20, y=30, is_heads=True)
         h3 = Coin(x=30, y=30, is_heads=True)
         h4 = Coin(x=40, y=30, is_heads=True)
 
-        self.coins = [t1, t2, t3, t4, h1, h2, h3, h4]
+        self.coins = [t1, t2, t3, t4, cc, h1, hh1, h2, hhh1, h3, h4]
         self.current_coin_index = 0
         self.highlighted = self.coins[0]
 
@@ -140,7 +144,7 @@ class Board:
       elif dy < 0 and dx > 0:
         self.draw_top_right_path()
       elif dy > 0 and dx > 0:
-        self.draw_bottom_left_path()
+        self.draw_bottom_right_path()
 
     def draw_vertical_path(self):
       print("vert")
@@ -162,16 +166,19 @@ class Board:
       maxy = max(self.path_y0, self.path_y1)
       left = min(self.path_x0, self.path_x1)
       right = max(self.path_x0, self.path_x1)
+      fslope = (maxy - miny) / (left - right)
       slope = (maxy - miny) // (left - right)
-      print("LR", left, right + 1)
+
+      current_y = maxy
       for xx in range(left, right + 1):
-        print("slope", 0, slope)
-        for yy in range(0, abs(slope)):
-          xdiff = xx - left
-          row = maxy + xdiff * slope - yy
-          col = xx
-          print("xdiff", xdiff, "row", row)
-          self.cells[row][col] = "."
+
+        xprogress = (xx - left) / (right - left)
+        y_spread = maxy - miny
+        yy_coord = maxy - xprogress * y_spread
+
+        while current_y > yy_coord:
+            self.cells[current_y][xx] = "."
+            current_y -= 1
 
     def draw_bottom_right_path(self):
       print("bot right path")
