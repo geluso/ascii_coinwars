@@ -1,0 +1,53 @@
+===============================================
+|                                             |
+|        s1     s2       s3      s4           |
+|                                             |
+|           i1      g1      c1                |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|                                             |
+|            c2      g2      i2               |
+|                                             |
+|       s5       s6      s7      s8           |
+|                                             |
+|                                             |
+===============================================
+c2 = convertor 2
+i1 = immobilizer 1
+g1, g2 = generals 1 and 2
+s1, s2, s3, s4 = soldiers 1-4
+s5, s6, s7, s8 = soldiers 5-8
+
+c2 i1 99
+slam coin c2 toward i1 at force 99
+
+
+c2 i1 99 -10
+slam coin c2 at i1 with force 99 at a -10 degree offset from the straight line between c2 and i1
