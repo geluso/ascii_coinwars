@@ -16,8 +16,7 @@ class Coin:
 
     # apply_force 33 50 8
     def apply_force(self, dx, dy, magnitude):
-      dx = dx / 100
-      dy = dy / 100
+      magnitude = 1
       for _ in range(magnitude):
           self.x += dx
           self.y += dy
@@ -58,7 +57,7 @@ class Board:
 
         self.coins = [t1, t2, t3, t4, cc, h1, hh1, h2, hhh1, h3, h4]
         self.current_coin_index = 0
-        self.highlighted = self.coins[0]
+        self.set_highlight()
 
         self.selected_coin = None
 
@@ -90,10 +89,22 @@ class Board:
               self.cells[row][col - 1] = "["
               self.cells[row][col + 1] = "]"
 
+    def draw_cursor(self):
+        prev = self.cells[self.cursory][self.cursorx]
+        if prev is " ":
+          self.cells[self.cursory][self.cursorx] = "_"
+        elif self.selected_coin and self.selected_coin.x == self.cursorx and self.selected_coin.y == self.cursory:
+          self.cells[self.cursory][self.cursorx - 1] = "["
+          self.cells[self.cursory][self.cursorx + 1] = "]"
+        else:
+          self.cells[self.cursory][self.cursorx - 1] = "("
+          self.cells[self.cursory][self.cursorx + 1] = ")"
+
     def __str__(self):
         self.set_board_cells()
         self.draw_path()
         self.set_coin_cells()
+        self.draw_cursor()
 
         result = ""
         for row in range(0, self.rows):
@@ -103,11 +114,19 @@ class Board:
 
         return result
 
+    def set_highlight(self):
+        self.highlighted = self.coins[self.current_coin_index]
+        self.cursorx = self.highlighted.x
+        self.cursory = self.highlighted.y
+
+    def cancel_highlight(self):
+        self.highlighted = None
+
     def select_next_coin(self):
         self.increment_current_count_index()
         if (self.get_current_count() is self.selected_coin):
             self.increment_current_count_index()
-        self.highlighted = self.coins[self.current_coin_index]
+        self.set_highlight()
 
     def increment_current_count_index(self):
         self.current_coin_index = (self.current_coin_index + 1) % len(self.coins)
@@ -116,12 +135,17 @@ class Board:
         return self.coins[self.current_coin_index]
 
     def select_current_coin(self):
-        self.selected_coin = self.coins[self.current_coin_index]
+        if self.highlighted:
+          self.selected_coin = self.coins[self.current_coin_index]
+        else:
+          for coin in self.coins:
+            if coin.roundX() == self.cursorx and coin.roundY() == self.cursory:
+              self.selected_coin = coin
 
     def reset_selections(self):
         self.selected_coin = None
         self.current_coin_index = 0
-        self.highlighted = self.coins[self.current_coin_index]
+        self.set_highlight()
 
     def set_path(self, x0, y0, x1, y1):
       self.path_x0 = x0
@@ -218,42 +242,4 @@ class Board:
         while current_y < yy_coord:
             self.cells[current_y][xx] = "."
             current_y += 1
-
-    def old_draw_path(self):
-      row = self.path_y0
-      col = self.path_x0
-
-      dy = self.path_y1 - self.path_y0
-      dx = self.path_x1 - self.path_x0
-
-      if dx is 0:
-        slope = math.inf
-      else:
-        slope = int(math.ceil(dy / dx))
-
-      print("slope:", slope)
-
-      offx = 1
-      if self.path_x1 < self.path_x0:
-        offx = -1
-
-      offy = 1
-      if self.path_y1 < self.path_y0:
-        offy = -1
-
-      print("coll:", self.path_x0, self.path_x1 + offx)
-      for coll in range(self.path_x0, self.path_x1 + offx):
-        if slope is math.inf:
-          print("row1:", self.path_y0, self.path_y1)
-          for roww in range(self.path_y0, self.path_y1, offy):
-            print(roww, coll)
-            self.cells[roww][coll] = "."
-        else:
-          print("sloppy", slope, offy)
-          for roww in range(0, slope + 1, offy):
-            coldiff = coll - self.path_x0
-            yy = roww + self.path_y0 + slope * coldiff
-            print("row2:", yy, coll)
-            self.cells[yy][coll] = "."
-
 
