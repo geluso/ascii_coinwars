@@ -116,6 +116,9 @@ class Board:
       self.selected_coin = None
       self.highlighted = None
       self.current_coin_index = -1
+      self.clear_path()
+
+    def clear_path(self):
       self.path_x0 = -1
       self.path_y0 = -1
       self.path_x1 = -1

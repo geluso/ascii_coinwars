@@ -24,11 +24,14 @@ def loop():
         if char is '\t':
           print("next coin")
           board.select_next_coin()
-        if char is '\n':
-          print("select coin")
-          board.select_current_coin()
         if char is '\r':
           print("select coin")
+          if board.selected_coin is not None:
+              c1 = board.selected_coin
+              c2 = board.highlighted
+              print("set path:", c1, c2)
+              print(c1.x, c1.y, c2.x, c2.y)
+              board.set_path(c1.x, c1.y, c2.x, c2.y)
           board.select_current_coin()
         if char is 'p':
           x0, y0, x1, y1 = [int(n) for n in input("Enter coords: ").split()]
