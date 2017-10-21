@@ -15,7 +15,7 @@ def getchar():
 def loop():
     while True:
         print(board)
-        print("Commands: (tab) next coin  (x) exit")
+        print("Commands: (tab) next coin (p) set path (c) clear (x) exit")
         char = getchar()
         print(char)
         if char is 'x':
@@ -30,6 +30,11 @@ def loop():
         if char is '\r':
           print("select coin")
           board.select_current_coin()
+        if char is 'p':
+          x0, y0, x1, y1 = [int(n) for n in input("Enter coords: ").split()]
+          board.set_path(x0, y0, x1, y1)
+        if char is 'c':
+          board.clear()
 
 board = Board()
 print(board)

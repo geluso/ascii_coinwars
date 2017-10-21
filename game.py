@@ -1,3 +1,4 @@
+import math
 import random
 from collections import defaultdict
 
@@ -22,6 +23,11 @@ class Board:
         self.cells = defaultdict(lambda: defaultdict(lambda: " "))
         self.rows = rows
         self.cols = cols
+
+        self.path_x0 = 0
+        self.path_y0 = 0
+        self.path_x1 = 0
+        self.path_y1 = 0
 
         t1 = Coin(x=10, y=10)
         t2 = Coin(x=20, y=10)
@@ -69,6 +75,7 @@ class Board:
 
     def __str__(self):
         self.set_board_cells()
+        self.draw_path()
         self.set_coin_cells()
 
         result = ""
@@ -99,7 +106,55 @@ class Board:
         self.current_coin_index = 0
         self.highlighted = self.coins[self.current_coin_index]
 
-    def draw_path(self, p0, p1):
-        pass
+    def set_path(self, x0, y0, x1, y1):
+      self.path_x0 = x0
+      self.path_y0 = y0
+      self.path_x1 = x1
+      self.path_y1 = y1
+
+    def clear(self):
+      self.selected_coin = None
+      self.highlighted = None
+      self.current_coin_index = -1
+      self.path_x0 = -1
+      self.path_y0 = -1
+      self.path_x1 = -1
+      self.path_y1 = -1
+
+    def draw_path(self):
+      row = self.path_y0
+      col = self.path_x0
+
+      dy = self.path_y1 - self.path_y0
+      dx = self.path_x1 - self.path_x0
+
+      if dx is 0:
+        slope = math.inf
+      else:
+        slope = dy // dx
+
+      print("slope:", slope)
+
+      offx = 1
+      if self.path_x1 < self.path_x0:
+        offx = -1
+
+      offy = 1
+      if self.path_y1 < self.path_y0:
+        offy = -1
+
+      print(self.path_x0, self.path_x1 + offx)
+      for coll in range(self.path_x0, self.path_x1 + offx):
+        if slope is math.inf:
+          print("row:", self.path_y0, self.path_y1)
+          for roww in range(self.path_y0, self.path_y1, offy):
+            print(roww, coll)
+            self.cells[roww][coll] = "."
+        else:
+          for roww in range(slope, offy):
+            coldiff = coll - self.path_x0
+            yy = roww + self.path_y0 + slope * coldiff
+            print(roww, coll)
+            self.cells[yy][coll] = "."
 
 
