@@ -8,18 +8,35 @@ class Coin:
         self.kind = kind
         self.x = x
         self.y = y
+        self.ticks = 0
+
+    def tick(self):
+        self.ticks -= 1
+        if self.ticks < 0:
+            return
+        self.x += self.dx
+        self.y += self.dy
 
     def roundX(self):
         return round(self.x)
     def roundY(self):
         return round(self.y)
 
-    # apply_force 33 50 8
     def apply_force(self, dx, dy, magnitude):
-      magnitude = 1
-      for _ in range(magnitude):
-          self.x += dx
-          self.y += dy
+        if (dx == dy and dx < 0):
+            dx, dy = -1, -1
+        elif (dx == dy and dx > 0):
+            dx, dy = 1, 1
+        elif (dx > dy):
+            dy = dy / dx
+            dx = 1
+        elif (dy > dx):
+            dx = dx / dy
+            dy = 1
+
+        self.dx = dx
+        self.dy = dy
+        self.ticks = magnitude
 
     def __str__(self):
         result = self.kind
@@ -228,9 +245,9 @@ class Board:
       fslope = (maxy - miny) / (left - right)
       slope = (maxy - miny) // (left - right)
 
+      path = []
       current_y = miny
       for xx in range(left, right + 1):
-
         xprogress = (xx - left) / (right - left)
         y_spread = maxy - miny
         yy_coord = miny + xprogress * y_spread
@@ -239,4 +256,12 @@ class Board:
         while current_y < yy_coord:
             self.cells[current_y][xx] = "."
             current_y += 1
+
+    def tick(self):
+        is_animated = False
+        for coin in self.coins:
+            coin.tick()
+            if (coin.ticks > 0):
+                is_animated = True
+        return is_animated
 

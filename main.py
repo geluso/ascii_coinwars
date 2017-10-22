@@ -1,17 +1,27 @@
 from game import *
+import time
 import curses
 from curses import wrapper
 
 def loop(screen):
+    board = Board()
     last_dx, last_dy, last_force = None, None, None
 
+    IS_ANIMATED = False
+
     while True:
+        IS_ANIMATED = board.tick()
         screen.clear()
         screen.addstr(str(board))
         screen.addstr("Commands: (tab) next coin (p) set path (c) clear (qx) exit\n")
         screen.addstr("Commands: (s) shoot (.) repeat shot\n")
-        char = screen.getkey()
         screen.refresh()
+
+        if IS_ANIMATED:
+            time.sleep(1 / 60)
+            continue
+
+        char = screen.getkey()
         if char is "\t":
           board.select_next_coin()
           coin = board.selected_coin
@@ -70,18 +80,6 @@ def loop(screen):
           if coin:
             coin.apply_force(270, 8)
           
-
-board = Board()
-
-def main(stdscr):
-    # Clear screen
-    stdscr.clear()
-
-    stdscr.addstr("hello!")
-
-    stdscr.refresh()
-    key = stdscr.getkey()
-
 try:
   stdscr = curses.initscr()
   curses.cbreak()
