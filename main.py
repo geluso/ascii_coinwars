@@ -60,14 +60,14 @@ def loop(screen):
             coin.apply_force(dx, dy, force)
         if char is '.':
           last_coin.apply_force(last_dx, last_dy, last_force)
-        if char in "hjkl":
-            if char is "h":
+        if char in "hjklKEY_LEFTKEY_RIGHTKEY_UPKEY_DOWN":
+            if char in "hKEY_LEFT":
                 board.cursorx -= 1
-            if char is "j":
+            if char in "jKEY_DOWN":
                 board.cursory += 1
-            if char is "k":
+            if char in "kKEY_UP":
                 board.cursory -= 1
-            if char is "l":
+            if char in "lKEY_RIGHT":
                 board.cursorx += 1
 
             board.cancel_highlight()
