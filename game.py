@@ -208,12 +208,18 @@ class Board:
     def draw_vertical_path(self):
       minn = min(self.path_y0, self.path_y1)
       maxx = max(self.path_y0, self.path_y1)
+
+      minn = round(minn)
+      maxx = round(maxx)
       for yy in range(minn, maxx):
         self.cells[yy][self.path_x0] = "."
 
     def draw_horizontal_path(self):
       left = min(self.path_x0, self.path_x1)
       right = max(self.path_x0, self.path_x1)
+
+      left = round(left)
+      right = round(right)
       for xx in range(left, right):
         self.cells[self.path_y0][xx] = "."
 
