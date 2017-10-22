@@ -189,21 +189,18 @@ class Board:
         self.draw_bottom_right_path()
 
     def draw_vertical_path(self):
-      print("vert")
       minn = min(self.path_y0, self.path_y1)
       maxx = max(self.path_y0, self.path_y1)
       for yy in range(minn, maxx):
         self.cells[yy][self.path_x0] = "."
 
     def draw_horizontal_path(self):
-      print("horz")
       left = min(self.path_x0, self.path_x1)
       right = max(self.path_x0, self.path_x1)
       for xx in range(left, right):
         self.cells[self.path_y0][xx] = "."
 
     def draw_top_right_path(self):
-      print("top right path")
       miny = min(self.path_y0, self.path_y1)
       maxy = max(self.path_y0, self.path_y1)
       left = min(self.path_x0, self.path_x1)
