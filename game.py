@@ -1,3 +1,7 @@
+import pymunk
+from pymunk import Vec2d
+from pymunk import pygame_util
+
 import math
 import random
 from collections import defaultdict
@@ -10,7 +14,19 @@ class Coin:
         self.y = y
         self.ticks = 0
 
+        mass = 1
+        radius = 1
+        inertia = pymunk.moment_for_circle(mass, 0, radius, (0,0))
+
+        self.body = pymunk.Body(mass, inertia)
+        self.body.position = self.x, self.y
+
+        self.shape = pymunk.Circle(self.body, radius, (0,0))
+        self.shape.elasticity = 0.95
+        self.shape.friction = 0.68
+
     def tick(self):
+        return
         self.ticks -= 1
         if self.ticks < 0:
             return
@@ -18,9 +34,9 @@ class Coin:
         self.y += self.dy
 
     def roundX(self):
-        return round(self.x)
+        return round(self.body.position[0])
     def roundY(self):
-        return round(self.y)
+        return round(self.body.position[1])
 
     def apply_force(self, dx, dy, magnitude):
         if (dx == dy and dx < 0):
@@ -35,6 +51,9 @@ class Coin:
             if dy != 0:
               dx = dx / dy
             dy = 1
+
+        magnitude *= 10
+        self.body.apply_force_at_local_point(Vec2d.unit() * magnitude, (dx, dy))
 
         self.dx = dx
         self.dy = dy
@@ -51,6 +70,12 @@ class Coin:
 
 class Board:
     def __init__(self, rows=50, cols=50):
+        self.space = pymunk.Space()
+        self.space.gravity = (0.0, 0.0)
+        self.space.damping = .9
+        self.space.idle_speed_threshold = .1
+        self.space.sleep_time_threshold = 1
+
         self.cells = defaultdict(lambda: defaultdict(lambda: " "))
         self.rows = rows
         self.cols = cols
@@ -79,6 +104,9 @@ class Board:
         self.set_highlight()
 
         self.selected_coin = None
+
+        for coin in self.coins:
+            self.space.add(coin.body, coin.shape)
 
     def set_board_cells(self):
         result = ""
@@ -112,7 +140,7 @@ class Board:
         prev = self.cells[self.cursory][self.cursorx]
         if prev is " ":
           self.cells[self.cursory][self.cursorx] = "_"
-        elif self.selected_coin and self.selected_coin.x == self.cursorx and self.selected_coin.y == self.cursory:
+        elif self.selected_coin and self.selected_coin.roundX() == self.cursorx and self.selected_coin.roundY() == self.cursory:
           self.cells[self.cursory][self.cursorx - 1] = "["
           self.cells[self.cursory][self.cursorx + 1] = "]"
         else:
@@ -135,8 +163,8 @@ class Board:
 
     def set_highlight(self):
         self.highlighted = self.coins[self.current_coin_index]
-        self.cursorx = self.highlighted.x
-        self.cursory = self.highlighted.y
+        self.cursorx = self.highlighted.roundX()
+        self.cursory = self.highlighted.roundY()
 
     def cancel_highlight(self):
         self.highlighted = None
@@ -270,10 +298,16 @@ class Board:
             current_y += 1
 
     def tick(self):
+        dt = 1.0/60
+        self.space.step(dt)
         is_animated = False
+        still_on_board = []
         for coin in self.coins:
-            coin.tick()
-            if (coin.ticks > 0):
+            if (not coin.body.is_sleeping):
                 is_animated = True
+            if not (coin.roundX() < 0 or coin.roundY() < 0 or coin.roundX() > self.cols or coin.roundY() > self.rows):
+                still_on_board.append(coin)
+
+        self.coins = still_on_board
         return is_animated
 

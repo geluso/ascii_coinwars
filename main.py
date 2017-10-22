@@ -8,6 +8,7 @@ def loop(screen):
     last_dx, last_dy, last_force = None, None, None
 
     IS_ANIMATED = False
+    JUST_FINISHED_ANIMATING = False
 
     while True:
         IS_ANIMATED = board.tick()
@@ -15,13 +16,18 @@ def loop(screen):
         screen.addstr(str(board))
         screen.addstr("Commands: (tab) next coin (p) set path (c) clear (qx) exit\n")
         screen.addstr("Commands: (s) shoot (.) repeat shot\n")
+        screen.addstr(str([f"{coin.body.velocity.length}" for coin in board.coins]))
+        screen.addstr("\n")
+        screen.addstr(str([f"{coin.body.is_sleeping}" for coin in board.coins]))
+        screen.addstr("\n")
         screen.refresh()
 
         if IS_ANIMATED:
-            time.sleep(1 / 60)
             continue
 
         char = screen.getkey()
+        screen.addstr(char)
+        screen.refresh()
         if char is "\t":
           board.select_next_coin()
           coin = board.selected_coin
@@ -46,9 +52,6 @@ def loop(screen):
         if char in 'qx':
             import sys
             sys.exit()
-        if char is 'p':
-          x0, y0, x1, y1 = [int(n) for n in input("Enter coords: ").split()]
-          board.set_path(x0, y0, x1, y1)
         if char is 'c':
           board.clear()
         if char is 's':
@@ -74,7 +77,7 @@ def loop(screen):
 
             if board.selected_coin is not None:
               c1 = board.selected_coin
-              board.set_path(c1.x, c1.y, board.cursorx, board.cursory)
+              board.set_path(c1.roundX(), c1.roundY(), board.cursorx, board.cursory)
         if char is ' ':
           coin = board.selected_coin
           if coin:
