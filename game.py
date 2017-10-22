@@ -28,10 +28,12 @@ class Coin:
         elif (dx == dy and dx > 0):
             dx, dy = 1, 1
         elif (dx > dy):
-            dy = dy / dx
+            if dx != 0:
+              dy = dy / dx
             dx = 1
         elif (dy > dx):
-            dx = dx / dy
+            if dy != 0:
+              dx = dx / dy
             dy = 1
 
         self.dx = dx
@@ -232,6 +234,8 @@ class Board:
       slope = (maxy - miny) // (left - right)
 
       current_y = maxy
+      left = round(left)
+      right = round(right)
       for xx in range(left, right + 1):
 
         xprogress = (xx - left) / (right - left)
@@ -253,6 +257,8 @@ class Board:
 
       path = []
       current_y = miny
+      left = round(left)
+      right = round(right)
       for xx in range(left, right + 1):
         xprogress = (xx - left) / (right - left)
         y_spread = maxy - miny
