@@ -25,6 +25,9 @@ class Coin:
         self.shape.elasticity = 0.95
         self.shape.friction = 0.68
 
+    def is_dirty(self):
+        return True
+
     def tick(self):
         return
         self.ticks -= 1
@@ -76,6 +79,7 @@ class Coin:
 
 class Board:
     def __init__(self, rows=50, cols=50):
+        self.needs_clearing = False
         self.space = pymunk.Space()
         self.space.gravity = (0.0, 0.0)
         self.space.damping = .9
@@ -315,5 +319,23 @@ class Board:
 
         self.coins = still_on_board
         return is_animated
+
+    def clone_coins(self):
+        # reset all of the coins to prevent wonky physics
+        clones = []
+        for coin in self.coins:
+            if not coin.is_dirty():
+                continue
+            clone = Coin(coin.is_heads, coin.kind, coin.body.position.x, coin.body.position.y)
+            if self.highlighted is coin:
+                self.highlighted = clone
+            if self.selected_coin is coin:
+                self.selected_coin = clone
+            self.space.remove(coin.body)
+            self.space.remove(coin.shape)
+            self.space.add(clone.body, clone.shape)
+            clones.append(clone)
+        self.coins = clones
+
 
 

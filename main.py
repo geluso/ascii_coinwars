@@ -15,28 +15,9 @@ def loop(screen):
         screen.clear()
         IS_ANIMATED = board.tick()
 
-        heads = board.get_heads()
-        heads_str = "".join([str(coin) for coin in heads])
-        tails = board.get_tails()
-        tails_str = "".join([str(coin) for coin in tails])
-
-        header = f"Heads: {heads_str}  Tails: {tails_str}"
-        if board.selected_coin is not None:
-            coin = board.selected_coin
-            header += f" {coin.roundX()},{coin.roundY()}"
-        if board.path_x1 and board.path_y1:
-            coin = board.selected_coin
-            header += f" {board.path_x1},{board.path_y1}"
-        header += "\n"
-
-        screen.addstr(header)
-        screen.addstr(str(board))
         screen.addstr("Commands: (tab) next coin (p) set path (c) clear (qx) exit\n")
         screen.addstr("Commands: (s) shoot (.) repeat shot\n")
-        screen.addstr(str([f"{coin.body.velocity.length}" for coin in board.coins]))
-        screen.addstr("\n")
-        screen.addstr(str([f"{coin.body.is_sleeping}" for coin in board.coins]))
-        screen.addstr("\n")
+        screen.addstr(str(board))
         screen.refresh()
 
         if IS_ANIMATED:
@@ -55,6 +36,7 @@ def loop(screen):
               board.path_x1 = board.cursorx
               board.path_y1 = board.cursory
         if char in "\r\n":
+          board.clone_coins()
           coin = board.selected_coin
           board.select_current_coin()
           if coin:
@@ -92,6 +74,8 @@ def loop(screen):
                 board.cursorx += 1
 
             board.cancel_highlight()
+        if char is 'c':
+            board.clone_coins()
         if char is ' ':
           coin = board.selected_coin
           if coin:
