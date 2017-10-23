@@ -79,6 +79,7 @@ class Coin:
 
 class Board:
     def __init__(self, rows=50, cols=50):
+        self.header = ""
         self.needs_clearing = False
         self.space = pymunk.Space()
         self.space.gravity = (0.0, 0.0)
@@ -228,7 +229,7 @@ class Board:
         # is the line going left?
         x0, y0 = self.selected_coin.roundX(), self.selected_coin.roundY()
         x1, y1 = self.cursorx, self.cursory
-        if self.path_x1 < self.path_x0:
+        if x1 < x0:
           x0, y0 = self.cursorx, self.cursory
           x1, y1 = self.selected_coin.roundX(), self.selected_coin.roundY()
 

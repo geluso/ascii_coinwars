@@ -17,6 +17,7 @@ def loop(screen):
 
         screen.addstr("Commands: (tab) next coin (p) set path (c) clear (qx) exit\n")
         screen.addstr("Commands: (s) shoot (.) repeat shot\n")
+        screen.addstr("Header: " + board.header + "\n")
         screen.addstr(str(board))
         screen.refresh()
 
