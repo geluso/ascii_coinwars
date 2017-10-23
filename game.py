@@ -7,7 +7,7 @@ import random
 from collections import defaultdict
 
 class Coin:
-    def __init__(self, is_heads=False, kind="s", x=0, y=0):
+    def __init__(self, is_heads=False, kind="q", x=0, y=0):
         self.is_heads = is_heads
         self.kind = kind
         self.x = x
@@ -39,18 +39,9 @@ class Coin:
         return round(self.body.position[1])
 
     def apply_force(self, dx, dy, magnitude):
-        if (dx == dy and dx < 0):
-            dx, dy = -1, -1
-        elif (dx == dy and dx > 0):
-            dx, dy = 1, 1
-        elif (dx > dy):
-            if dx != 0:
-              dy = dy / dx
-            dx = 1
-        elif (dy > dx):
-            if dy != 0:
-              dx = dx / dy
-            dy = 1
+        angle = Vec2d(dx, dy).angle
+        dx, dy = self.point_on_circle(angle)
+        dy = -dy
 
         magnitude *= 10
         self.body.apply_force_at_local_point(Vec2d.unit() * magnitude, (dx, dy))
@@ -58,6 +49,16 @@ class Coin:
         self.dx = dx
         self.dy = dy
         self.ticks = magnitude
+
+    def point_on_circle(self, angle):
+        from math import cos, sin, pi
+        #center of circle, angle in degree and radius of circle
+        center = [0,0]
+        radius = 1
+        x = center[0] + (radius * cos(angle))
+        y = center[1] + (radius * sin(angle))
+
+        return x,y
 
     def __str__(self):
         result = self.kind
@@ -85,19 +86,19 @@ class Board:
         self.path_x1 = 0
         self.path_y1 = 0
 
-        cc = Coin(x=25, y=20)
+        cc = Coin(x=25, y=20, is_heads=True)
 
-        t1 = Coin(x=10, y=10)
-        t2 = Coin(x=20, y=10)
-        t3 = Coin(x=30, y=10)
-        t4 = Coin(x=40, y=10)
+        t1 = Coin(x=10, y=10, is_heads=True)
+        t2 = Coin(x=20, y=10, is_heads=True)
+        t3 = Coin(x=30, y=10, is_heads=True)
+        t4 = Coin(x=40, y=10, is_heads=True)
 
-        h1 = Coin(x=10, y=30, is_heads=True)
-        hh1 = Coin(x=19, y=29, is_heads=True)
-        hhh1 = Coin(x=19, y=31, is_heads=True)
-        h2 = Coin(x=20, y=30, is_heads=True)
-        h3 = Coin(x=30, y=30, is_heads=True)
-        h4 = Coin(x=40, y=30, is_heads=True)
+        h1 = Coin(x=10, y=30, is_heads=False)
+        hh1 = Coin(x=19, y=29, is_heads=False)
+        hhh1 = Coin(x=19, y=31, is_heads=False)
+        h2 = Coin(x=20, y=30, is_heads=False)
+        h3 = Coin(x=30, y=30, is_heads=False)
+        h4 = Coin(x=40, y=30, is_heads=False)
 
         self.coins = [t1, t2, t3, t4, cc, h1, hh1, h2, hhh1, h3, h4]
         self.current_coin_index = 0
@@ -107,6 +108,12 @@ class Board:
 
         for coin in self.coins:
             self.space.add(coin.body, coin.shape)
+    
+    def get_heads(self):
+        return [coin for coin in self.coins if coin.is_heads]
+
+    def get_tails(self):
+        return [coin for coin in self.coins if not coin.is_heads]
 
     def set_board_cells(self):
         result = ""
@@ -310,4 +317,5 @@ class Board:
 
         self.coins = still_on_board
         return is_animated
+
 

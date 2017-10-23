@@ -9,10 +9,18 @@ def loop(screen):
 
     IS_ANIMATED = False
     JUST_FINISHED_ANIMATING = False
+    SHOW_KEY_CHAR = False
 
     while True:
-        IS_ANIMATED = board.tick()
         screen.clear()
+        IS_ANIMATED = board.tick()
+
+        heads = board.get_heads()
+        heads_str = "".join([str(coin) for coin in heads])
+        tails = board.get_tails()
+        tails_str = "".join([str(coin) for coin in tails])
+
+        screen.addstr(f"Heads: {heads_str}  Tails: {tails_str}\n")
         screen.addstr(str(board))
         screen.addstr("Commands: (tab) next coin (p) set path (c) clear (qx) exit\n")
         screen.addstr("Commands: (s) shoot (.) repeat shot\n")
@@ -26,8 +34,9 @@ def loop(screen):
             continue
 
         char = screen.getkey()
-        screen.addstr(char)
-        screen.refresh()
+        if SHOW_KEY_CHAR:
+            screen.addstr(char)
+            screen.refresh()
         if char is "\t":
           board.select_next_coin()
           coin = board.selected_coin
