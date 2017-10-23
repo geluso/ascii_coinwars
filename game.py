@@ -42,13 +42,13 @@ class Coin:
         return round(self.body.position[1])
 
     def apply_force(self, dx, dy, magnitude):
-        self.body.velocity = Vec2d(dx, dy) / 10
+        self.body.velocity = Vec2d(dx, dy) / 10 * 2
         return
         angle = Vec2d(dx, dy).angle
         dx, dy = self.point_on_circle(angle)
         dy = -dy
 
-        magnitude *= 10
+        magnitude *= 10 * 2
         dx += self.x
         dy += self.y
         #self.body.apply_force_at_world_point(Vec2d.unit() * magnitude, (dx, dy))
@@ -96,21 +96,20 @@ class Board:
         self.path_x1 = 0
         self.path_y1 = 0
 
-        cc = Coin(x=25, y=20, is_heads=True)
-
         t1 = Coin(x=10, y=10, is_heads=True)
         t2 = Coin(x=20, y=10, is_heads=True)
         t3 = Coin(x=30, y=10, is_heads=True)
         t4 = Coin(x=40, y=10, is_heads=True)
 
         h1 = Coin(x=10, y=30, is_heads=False)
-        hh1 = Coin(x=19, y=29, is_heads=False)
-        hhh1 = Coin(x=19, y=31, is_heads=False)
         h2 = Coin(x=20, y=30, is_heads=False)
         h3 = Coin(x=30, y=30, is_heads=False)
         h4 = Coin(x=40, y=30, is_heads=False)
 
-        self.coins = [t1, t2, t3, t4, cc, h1, hh1, h2, hhh1, h3, h4]
+        self.coins = [t1, t2, t3, t4, h1, h2, h3, h4]
+
+        self.reformat_coin_hud()
+
         self.current_coin_index = 0
         self.set_highlight()
 
@@ -307,6 +306,17 @@ class Board:
             self.cells[current_y][xx] = "."
             current_y += 1
 
+    def off_board(self, coin):
+        if coin.roundX() < 0:
+            return True
+        if coin.roundY() < 0:
+            return True
+        if coin.roundX() > self.cols:
+            return True
+        if coin.roundY() > self.rows:
+            return True
+        return False
+
     def tick(self):
         dt = 1.0/60
         self.space.step(dt)
@@ -315,11 +325,25 @@ class Board:
         for coin in self.coins:
             if (not coin.body.is_sleeping):
                 is_animated = True
-            if not (coin.roundX() < 0 or coin.roundY() < 0 or coin.roundX() > self.cols or coin.roundY() > self.rows):
+            if not self.off_board(coin):
                 still_on_board.append(coin)
+
+        self.reformat_coin_hud()
 
         self.coins = still_on_board
         return is_animated
+
+    def display_coin_coords(self):
+        self.header = ""
+        for coin in self.coins:
+            self.header += f"{coin.x},{coin.y} "
+
+    def reformat_coin_hud(self):
+        self.heads = [coin for coin in self.coins if coin.is_heads]
+        self.tails = [coin for coin in self.coins if not coin.is_heads]
+
+        self.heads_str = "".join([str(coin) for coin in self.heads])
+        self.tails_str = "".join([str(coin) for coin in self.tails])
 
     def clone_coins(self):
         # reset all of the coins to prevent wonky physics
