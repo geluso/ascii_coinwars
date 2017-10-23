@@ -39,12 +39,17 @@ class Coin:
         return round(self.body.position[1])
 
     def apply_force(self, dx, dy, magnitude):
+        self.body.velocity = Vec2d(dx, dy) / 10
+        return
         angle = Vec2d(dx, dy).angle
         dx, dy = self.point_on_circle(angle)
         dy = -dy
 
         magnitude *= 10
-        self.body.apply_force_at_local_point(Vec2d.unit() * magnitude, (dx, dy))
+        dx += self.x
+        dy += self.y
+        #self.body.apply_force_at_world_point(Vec2d.unit() * magnitude, (dx, dy))
+
 
         self.dx = dx
         self.dy = dy
@@ -201,17 +206,6 @@ class Board:
         self.current_coin_index = 0
         self.set_highlight()
 
-    def set_path(self, x0, y0, x1, y1):
-      self.path_x0 = x0
-      self.path_y0 = y0
-      self.path_x1 = x1
-      self.path_y1 = y1
-      if x1 < x0:
-        self.path_x0 = x1
-        self.path_y0 = y1
-        self.path_x1 = x0
-        self.path_y1 = y0
-
     def clear(self):
       self.selected_coin = None
       self.highlighted = None
@@ -225,46 +219,50 @@ class Board:
       self.path_y1 = -1
 
     def draw_path(self):
-      # is the line going left?
-      if self.path_x1 < self.path_x0:
-          self.path_x0, self.path_x1 = self.path_x1, self.path_x0
-          self.path_y0, self.path_y1 = self.path_y1, self.path_y0
+        if not (self.selected_coin and self.cursorx > 0 and self.cursory > 0):
+            return
+        # is the line going left?
+        x0, y0 = self.selected_coin.roundX(), self.selected_coin.roundY()
+        x1, y1 = self.cursorx, self.cursory
+        if self.path_x1 < self.path_x0:
+          x0, y0 = self.cursorx, self.cursory
+          x1, y1 = self.selected_coin.roundX(), self.selected_coin.roundY()
 
-      dy = self.path_y1 - self.path_y0
-      dx = self.path_x1 - self.path_x0
+        dy = y1 - y0
+        dx = x1 - x0
 
-      if dx is 0:
-        self.draw_vertical_path()
-      elif dy is 0:
-        self.draw_horizontal_path()
-      elif dy < 0 and dx > 0:
-        self.draw_top_right_path()
-      elif dy > 0 and dx > 0:
-        self.draw_bottom_right_path()
+        if dx is 0:
+          self.draw_vertical_path(x0, y0, x1, y1)
+        elif dy is 0:
+          self.draw_horizontal_path(x0, y0, x1, y1)
+        elif dy < 0 and dx > 0:
+          self.draw_top_right_path(x0, y0, x1, y1)
+        elif dy > 0 and dx > 0:
+          self.draw_bottom_right_path(x0, y0, x1, y1)
 
-    def draw_vertical_path(self):
-      minn = min(self.path_y0, self.path_y1)
-      maxx = max(self.path_y0, self.path_y1)
+    def draw_vertical_path(self, x0, y0, x1, y1):
+      minn = min(y0, y1)
+      maxx = max(y0, y1)
 
       minn = round(minn)
       maxx = round(maxx)
       for yy in range(minn, maxx):
-        self.cells[yy][self.path_x0] = "."
+        self.cells[yy][x0] = "."
 
-    def draw_horizontal_path(self):
-      left = min(self.path_x0, self.path_x1)
-      right = max(self.path_x0, self.path_x1)
+    def draw_horizontal_path(self, x0, y0, x1, y1):
+      left = min(x0, x1)
+      right = max(x0, x1)
 
       left = round(left)
       right = round(right)
       for xx in range(left, right):
-        self.cells[self.path_y0][xx] = "."
+        self.cells[y0][xx] = "."
 
-    def draw_top_right_path(self):
-      miny = min(self.path_y0, self.path_y1)
-      maxy = max(self.path_y0, self.path_y1)
-      left = min(self.path_x0, self.path_x1)
-      right = max(self.path_x0, self.path_x1)
+    def draw_top_right_path(self, x0, y0, x1, y1):
+      miny = min(y0, y1)
+      maxy = max(y0, y1)
+      left = min(x0, x1)
+      right = max(x0, x1)
       fslope = (maxy - miny) / (left - right)
       slope = (maxy - miny) // (left - right)
 
@@ -282,11 +280,11 @@ class Board:
             self.cells[current_y][xx] = "."
             current_y -= 1
 
-    def draw_bottom_right_path(self):
-      miny = min(self.path_y0, self.path_y1)
-      maxy = max(self.path_y0, self.path_y1)
-      left = min(self.path_x0, self.path_x1)
-      right = max(self.path_x0, self.path_x1)
+    def draw_bottom_right_path(self, x0, y0, x1, y1):
+      miny = min(y0, y1)
+      maxy = max(y0, y1)
+      left = min(x0, x1)
+      right = max(x0, x1)
       fslope = (maxy - miny) / (left - right)
       slope = (maxy - miny) // (left - right)
 

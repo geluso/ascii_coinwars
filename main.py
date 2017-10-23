@@ -20,7 +20,16 @@ def loop(screen):
         tails = board.get_tails()
         tails_str = "".join([str(coin) for coin in tails])
 
-        screen.addstr(f"Heads: {heads_str}  Tails: {tails_str}\n")
+        header = f"Heads: {heads_str}  Tails: {tails_str}"
+        if board.selected_coin is not None:
+            coin = board.selected_coin
+            header += f" {coin.roundX()},{coin.roundY()}"
+        if board.path_x1 and board.path_y1:
+            coin = board.selected_coin
+            header += f" {board.path_x1},{board.path_y1}"
+        header += "\n"
+
+        screen.addstr(header)
         screen.addstr(str(board))
         screen.addstr("Commands: (tab) next coin (p) set path (c) clear (qx) exit\n")
         screen.addstr("Commands: (s) shoot (.) repeat shot\n")
@@ -83,10 +92,6 @@ def loop(screen):
                 board.cursorx += 1
 
             board.cancel_highlight()
-
-            if board.selected_coin is not None:
-              c1 = board.selected_coin
-              board.set_path(c1.roundX(), c1.roundY(), board.cursorx, board.cursory)
         if char is ' ':
           coin = board.selected_coin
           if coin:
