@@ -1,10 +1,11 @@
-from game import *
+from table import *
+from coin import *
 import time
 import curses
 from curses import wrapper
 
 def loop(screen):
-    board = Board()
+    board = Table()
     last_dx, last_dy, last_force = None, None, None
 
     IS_ANIMATED = False
