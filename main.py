@@ -1,4 +1,4 @@
-import table
+from game import Game
 
 import time
 import curses
@@ -7,7 +7,7 @@ from curses import wrapper
 USE_MY_WRAPPER = False
 
 def loop(screen):
-    board = table.Table()
+    game = Game()
 
     IS_ANIMATED = False
     JUST_FINISHED_ANIMATING = False
@@ -15,7 +15,7 @@ def loop(screen):
 
     while True:
         screen.clear()
-        IS_ANIMATED = board.tick()
+        IS_ANIMATED = game.table.tick()
 
         screen.addstr("                    COIN WARS" + "\n")
         screen.addstr("* N=nickel D=dime Q=quarter $=dollar coin\n")
@@ -25,19 +25,19 @@ def loop(screen):
         screen.addstr("* Take turns. Knock all other coins off to win.\n")
         screen.addstr(f"\n")
 
-        coin_hud = f"Heads: {board.heads_str}   Tails: {board.tails_str}"
-        if len(board.heads) == 0 and len(board.tails) == 0:
+        coin_hud = f"Heads: {game.table.heads_str}   Tails: {game.table.tails_str}"
+        if len(game.table.heads) == 0 and len(game.table.tails) == 0:
             coin_hud += "    MUTUAL DESTRUCTION!!"
-        elif len(board.heads) == 0:
+        elif len(game.table.heads) == 0:
             coin_hud += "    TAILS wins!!"
-        elif len(board.tails) == 0:
+        elif len(game.table.tails) == 0:
             coin_hud += "    HEADS wins!!"
         screen.addstr(coin_hud + "\n")
 
-        if len(board.header) > 0:
-          screen.addstr("Header: " + board.header + "\n")
+        if len(game.table.header) > 0:
+          screen.addstr("Header: " + game.table.header + "\n")
 
-        screen.addstr(str(board))
+        screen.addstr(str(game.table))
         screen.refresh()
 
         if IS_ANIMATED:
@@ -48,60 +48,60 @@ def loop(screen):
             screen.addstr(char)
             screen.refresh()
         if char is "\t":
-          board.select_next_coin()
-          coin = board.selected_coin
+          game.table.select_next_coin()
+          coin = game.table.selected_coin
           if coin:
-              board.path_x0 = coin.roundX()
-              board.path_y0 = coin.roundY()
-              board.path_x1 = board.cursorx
-              board.path_y1 = board.cursory
+              game.table.path_x0 = coin.roundX()
+              game.table.path_y0 = coin.roundY()
+              game.table.path_x1 = game.table.cursorx
+              game.table.path_y1 = game.table.cursory
         if char in "e\r\n":
-          coin = board.selected_coin
-          board.select_current_coin()
+          coin = game.table.selected_coin
+          game.table.select_current_coin()
           if coin:
               if coin.is_immobilized:
                   screen.addstr("IMMOBILIZED\n")
                   screen.refresh()
                   continue
-              board.clone_coins()
+              game.table.clone_coins()
 
-              dx = board.cursorx - coin.roundX()
-              dy = board.cursory - coin.roundY()
+              dx = game.table.cursorx - coin.roundX()
+              dy = game.table.cursory - coin.roundY()
               magnitude = (dx * dx + dy * dy) ** .5
               magnitude = round(magnitude)
 
-              board.selected_coin.apply_force(dx, dy, magnitude)
+              game.table.selected_coin.apply_force(dx, dy, magnitude)
 
               # after a coin successfully fires manually reset
               # all coins that were immobilized
-              board.reset_immobilized()
+              game.table.reset_immobilized()
 
-              board.clear()
+              game.table.clear()
         if char in 'qx':
             import sys
             sys.exit()
         if char is 'c':
-          board.clear()
+          game.table.clear()
         if char is 's':
-          coin = board.highlight
+          coin = game.table.highlight
           if coin:
             dx, dy, force = [int(n) for n in input("input (dx dy force): ").split(" ")]
             coin.apply_force(dx, dy, force)
         if char in "hjklKEY_LEFTKEY_RIGHTKEY_UPKEY_DOWN":
             if char in "hKEY_LEFT":
-                board.cursorx -= 1
+                game.table.cursorx -= 1
             if char in "jKEY_DOWN":
-                board.cursory += 1
+                game.table.cursory += 1
             if char in "kKEY_UP":
-                board.cursory -= 1
+                game.table.cursory -= 1
             if char in "lKEY_RIGHT":
-                board.cursorx += 1
+                game.table.cursorx += 1
 
-            board.cancel_highlight()
+            game.table.cancel_highlight()
         if char is 'c':
-            board.clone_coins()
+            game.table.clone_coins()
         if char is ' ':
-          coin = board.selected_coin
+          coin = game.table.selected_coin
           if coin:
             coin.apply_force(270, 8)
           
