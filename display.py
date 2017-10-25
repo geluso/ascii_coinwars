@@ -2,8 +2,8 @@ class Display:
     def __init__(self, screen, game):
         self.screen = screen
         self.game = game
-        self.cursorx = 0
-        self.cursory = 0
+        self.cursorx = game.table.cols // 2
+        self.cursory = game.table.rows // 2
         self.selected_coin = None
 
     def draw(self):
