@@ -69,11 +69,50 @@ class Display:
             x, y = self.cursorx, self.cursory
             table.set_path(self.selected_coin, x, y)
 
-    def highlight_next_coin(self):
-        # select own coins from heads or tails if
-        # no coin is currently selected. otherwise
-        # select from opponent coins to target.
-        pass
+    def target_next_coin(self):
+        # pick a friendly piece first, then aim
+        # it at an enemy piece
+        if self.selected_coin is None:
+            coin = self.move_cursor_to_next_friendly_coin()
+        else:
+            coin = self.move_cursor_to_next_enemy_coin()
+        self.cursorx = coin.roundX()
+        self.cursory = coin.roundY()
+
+    def move_cursor_to_next_friendly_coin(self):
+        friendlies = self.game.table.tails
+        if self.game.get_current_player().is_heads:
+            friendlies = self.game.table.heads
+
+        coin_under_cursor = self.game.table.get_coin(self.cursorx, self.cursory)
+        if coin_under_cursor is None:
+            return friendlies[0]
+        elif coin_under_cursor.is_heads is not self.game.get_current_player().is_heads:
+            return friendlies[0]
+        else:
+            index = friendlies.index(coin_under_cursor)
+            index += 1
+            index %= len(friendlies)
+            return friendlies[index]
+
+    def move_cursor_to_next_enemy_coin(self):
+        enemies = self.game.table.heads
+        if self.game.get_current_player().is_heads:
+            enemies = self.game.table.tails
+
+        coin_under_cursor = self.game.table.get_coin(self.cursorx, self.cursory)
+        # start from the top if there's no coin under the cursor
+        if coin_under_cursor.is_heads is None:
+            return enemies[0]
+        # or if the cursor is over one of your own
+        if coin_under_cursor.is_heads is self.game.get_current_player().is_heads:
+            return enemies[0]
+        # otherwise, move to the next enemy
+        else:
+            index = enemies.index(coin_under_cursor)
+            index += 1
+            index %= len(enemies)
+            return enemies[index]
 
     def select_or_shoot_coin(self):
         x, y = self.cursorx, self.cursory

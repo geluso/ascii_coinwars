@@ -27,7 +27,7 @@ def loop(screen):
             screen.addstr(char)
             screen.refresh()
         if char is "\t":
-            display.highlight_next_coin()
+            display.target_next_coin()
         if char in "e\r\n":
             display.select_or_shoot_coin()
         if char in 'qx':
