@@ -26,3 +26,4 @@ class AIPlayer(player.Player):
         time.sleep(3)
 
         game.shoot_coin(my_coin, target.roundX(), target.roundY())
+        display.selected_coin = None
