@@ -2,6 +2,16 @@ import pymunk
 from pymunk import Vec2d
 from pymunk import pygame_util
 
+COIN_COLLISION = 1
+# penny         nickel  dime    quarter half dollar     dollar
+# 2.500 g	5.000 g	2.268 g	5.670 g	11.340 g	8.1 g
+# 0.750 in.  19.05 mm penny
+# 0.835 in.  21.21 mm nickel
+# 0.705 in.  17.91 mm dime
+# 0.955 in.  24.26 mm quarter
+# 1.205 in.  30.61 mm half dollar
+# 1.043 in.  26.49 mm dollar
+
 class Coin:
     def __init__(self, is_heads=False, kind="q", x=0, y=0):
         self.is_heads = is_heads
@@ -10,16 +20,34 @@ class Coin:
         self.y = y
         self.ticks = 0
 
-        mass = 1
-        radius = 1
-        inertia = pymunk.moment_for_circle(mass, 0, radius, (0,0))
+        self.is_shooting = False
+        self.is_immobilized = False
+        self.can_convert = True
 
-        self.body = pymunk.Body(mass, inertia)
+        self.mass = 1
+        self.radius = 1
+        self.create_body_shape()
+
+    def create_body_shape(self):
+        inertia = pymunk.moment_for_circle(self.mass, 0, self.radius, (0,0))
+        self.body = pymunk.Body(self.mass, inertia)
         self.body.position = self.x, self.y
 
-        self.shape = pymunk.Circle(self.body, radius, (0,0))
-        self.shape.elasticity = 0.95
+        self.shape = pymunk.Circle(self.body, self.radius, (0,0))
+        self.shape.elasticity = .99
         self.shape.friction = 0.68
+        self.shape.collision_type = 1
+
+        self.shape.coin = self
+        self.body.coin = self
+
+    def collide(self, other):
+        pass
+
+    def clone(self):
+        coin = Coin(self.is_heads, self.kind, self.body.position.x, self.body.position.y)
+        coin.is_immobilized = self.is_immobilized
+        return coin
 
     def is_dirty(self):
         return True
@@ -38,6 +66,7 @@ class Coin:
         return round(self.body.position[1])
 
     def apply_force(self, dx, dy, magnitude):
+        self.is_shooting = True
         self.body.velocity = Vec2d(dx, dy) / 10 * 2
         return
         angle = Vec2d(dx, dy).angle

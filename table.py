@@ -2,13 +2,20 @@ import pymunk
 from pymunk import Vec2d
 from pymunk import pygame_util
 from coin import *
+from dime import Dime
+from nickel import Nickel
+from dollar import Dollar
 
 import math
 import random
 from collections import defaultdict
 
+
+#t1 = Table()
+#t2 = Table(20, 30)
+#t3 = Table(cols=100)
 class Table:
-    def __init__(self, rows=50, cols=50):
+    def __init__(self, rows=40, cols=50):
         self.header = ""
         self.needs_clearing = False
         self.space = pymunk.Space()
@@ -16,6 +23,16 @@ class Table:
         self.space.damping = .9
         self.space.idle_speed_threshold = .1
         self.space.sleep_time_threshold = 1
+
+        def collide(arbiter, space, data):
+            shape1, shape2 = arbiter.shapes
+            coin1, coin2 = shape1.coin, shape2.coin
+            coin1.collide(coin2)
+            coin2.collide(coin1)
+
+        collision_handler = self.space.add_collision_handler(1, 1)
+        #collision_handler.begin = collide
+        collision_handler.post_solve = collide
 
         self.cells = defaultdict(lambda: defaultdict(lambda: " "))
         self.rows = rows
@@ -26,17 +43,22 @@ class Table:
         self.path_x1 = 0
         self.path_y1 = 0
 
-        t1 = Coin(x=10, y=10, is_heads=True)
-        t2 = Coin(x=20, y=10, is_heads=True)
-        t3 = Coin(x=30, y=10, is_heads=True)
-        t4 = Coin(x=40, y=10, is_heads=True)
+        self.coins = []
+        self.coins.append(Coin(x=10, y=10, is_heads=True))
+        self.coins.append(Coin(x=20, y=10, is_heads=True))
+        self.coins.append(Coin(x=30, y=10, is_heads=True))
+        self.coins.append(Coin(x=40, y=10, is_heads=True))
+        self.coins.append(Dime(x=15, y=14, is_heads=True))
+        self.coins.append(Dollar(x=25, y=14, is_heads=True))
+        self.coins.append(Nickel(x=35, y=14, is_heads=True))
 
-        h1 = Coin(x=10, y=30, is_heads=False)
-        h2 = Coin(x=20, y=30, is_heads=False)
-        h3 = Coin(x=30, y=30, is_heads=False)
-        h4 = Coin(x=40, y=30, is_heads=False)
-
-        self.coins = [t1, t2, t3, t4, h1, h2, h3, h4]
+        self.coins.append(Coin(x=10, y=30, is_heads=False))
+        self.coins.append(Coin(x=20, y=30, is_heads=False))
+        self.coins.append(Coin(x=30, y=30, is_heads=False))
+        self.coins.append(Coin(x=40, y=30, is_heads=False))
+        self.coins.append(Dime(x=15, y=26, is_heads=False))
+        self.coins.append(Dollar(x=25, y=26, is_heads=False))
+        self.coins.append(Nickel(x=35, y=26, is_heads=False))
 
         self.reformat_coin_hud()
 
@@ -47,7 +69,7 @@ class Table:
 
         for coin in self.coins:
             self.space.add(coin.body, coin.shape)
-    
+
     def get_heads(self):
         return [coin for coin in self.coins if coin.is_heads]
 
@@ -159,8 +181,8 @@ class Table:
         x0, y0 = self.selected_coin.roundX(), self.selected_coin.roundY()
         x1, y1 = self.cursorx, self.cursory
         if x1 < x0:
-          x0, y0 = self.cursorx, self.cursory
-          x1, y1 = self.selected_coin.roundX(), self.selected_coin.roundY()
+          # swap the two points
+          x0, y0, x1, y1 = x1, y1, x0, y0
 
         dy = y1 - y0
         dx = x1 - x0
@@ -275,13 +297,17 @@ class Table:
         self.heads_str = "".join([str(coin) for coin in self.heads])
         self.tails_str = "".join([str(coin) for coin in self.tails])
 
+    def reset_immobilized(self):
+        for coin in self.coins:
+            coin.is_immobilized = False
+
     def clone_coins(self):
         # reset all of the coins to prevent wonky physics
         clones = []
         for coin in self.coins:
             if not coin.is_dirty():
                 continue
-            clone = Coin(coin.is_heads, coin.kind, coin.body.position.x, coin.body.position.y)
+            clone = coin.clone()
             if self.highlighted is coin:
                 self.highlighted = clone
             if self.selected_coin is coin:
