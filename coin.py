@@ -22,6 +22,10 @@ class Coin:
 
         self.is_shooting = False
         self.is_immobilized = False
+        self.is_recently_immobilized = False
+        self.remind_cant_select = False
+        self.is_recently_converted = False
+        self.is_recently_resisted_conversion = False
         self.can_convert = True
 
         self.mass = 1

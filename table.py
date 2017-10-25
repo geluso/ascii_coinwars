@@ -85,17 +85,28 @@ class Table:
             if coin.roundX() == cx and coin.roundY() == cy:
               self.cells[row][col - 1] = "("
               self.cells[row][col + 1] = ")"
+              # remind the player they can't select an immobilized coin
+              if coin.is_immobilized:
+                self.label(coin, "IMMOBILIZED!")
+                if coin.remind_cant_select:
+                    self.label(coin, "CANT SELECT", yoff=1)
 
             if (coin is selected):
               self.cells[row][col - 1] = "["
               self.cells[row][col + 1] = "]"
 
-            if coin.is_immobilized:
+            if coin.is_recently_immobilized:
                 self.label(coin, "IMMOBILIZED!")
 
-    def label(self, coin, msg):
-        row = coin.roundY()
-        col = coin.roundX()
+            if coin.is_recently_converted:
+                self.label(coin, "CONVERTED!")
+
+            if coin.is_recently_resisted_conversion:
+                self.label(coin, "CANT CONVERT!")
+
+    def label(self, coin, msg, xoff=0, yoff=0):
+        row = coin.roundY() + yoff
+        col = coin.roundX() + xoff
 
         offset = 3
         # if the message would run into the right wall

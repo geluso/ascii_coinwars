@@ -28,6 +28,10 @@ class Dime(coin.Coin):
     def collide(self, other):
         if not self.is_shooting:
             return
+        if not other.can_convert:
+            other.is_recently_resisted_conversion = True
+
         # dimes convert!
-        if other.can_convert:
+        if other.can_convert and other.is_heads is not self.is_heads:
             other.is_heads = self.is_heads
+            other.is_recently_converted = True

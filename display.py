@@ -54,15 +54,19 @@ class Display:
 
     def move_cursor_left(self):
         self.cursorx -= 1
+        self.resolve_cursor_movement()
 
     def move_cursor_down(self):
         self.cursory += 1
+        self.resolve_cursor_movement()
 
     def move_cursor_up(self):
         self.cursory -= 1
+        self.resolve_cursor_movement()
 
     def move_cursor_right(self):
         self.cursorx += 1
+        self.resolve_cursor_movement()
 
     def update_path(self):
         if self.selected_coin is not None:
@@ -70,6 +74,8 @@ class Display:
             table.set_path(self.selected_coin, x, y)
 
     def target_next_coin(self):
+        self.resolve_cursor_movement()
+         
         # pick a friendly piece first, then aim
         # it at an enemy piece
         if self.selected_coin is None:
@@ -115,12 +121,25 @@ class Display:
             return enemies[index]
 
     def select_or_shoot_coin(self):
+        self.resolve_cursor_movement()
+
         x, y = self.cursorx, self.cursory
         if self.selected_coin is None:
-            self.selected_coin = self.game.select_coin(x, y)
+            coin = self.game.select_coin(x, y)
+            if coin.is_immobilized:
+                coin.remind_cant_select = True
+            else:
+                self.selected_coin = self.game.select_coin(x, y)
         else:
             self.game.shoot_coin(self.selected_coin, x, y)
             self.selected_coin = None
+
+    def resolve_cursor_movement(self):
+        for coin in self.game.table.coins:
+            coin.is_recently_converted = False
+            coin.is_recently_immobilized = False
+            coin.remind_cant_select = False
+            coin.is_recently_resisted_conversion = False
 
     def quit():
         import sys

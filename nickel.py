@@ -30,3 +30,4 @@ class Nickel(coin.Coin):
         # nickels immobilize!
         if other.is_heads is not self.is_heads:
           other.is_immobilized = True
+          other.is_recently_immobilized = True
