@@ -1,6 +1,4 @@
-from table import *
-from coin import *
-from my_wrapper import *
+import table
 
 import time
 import curses
@@ -9,7 +7,7 @@ from curses import wrapper
 USE_MY_WRAPPER = False
 
 def loop(screen):
-    board = Table()
+    board = table.Table()
 
     IS_ANIMATED = False
     JUST_FINISHED_ANIMATING = False
@@ -72,7 +70,6 @@ def loop(screen):
               magnitude = (dx * dx + dy * dy) ** .5
               magnitude = round(magnitude)
 
-
               board.selected_coin.apply_force(dx, dy, magnitude)
 
               # after a coin successfully fires manually reset
@@ -109,7 +106,8 @@ def loop(screen):
             coin.apply_force(270, 8)
           
 if USE_MY_WRAPPER:
-    my_wrapper(loop)
+    import my_wrapper
+    my_wrapper.my_wrapper(loop)
 else:
     try:
       stdscr = curses.initscr()

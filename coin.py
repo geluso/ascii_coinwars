@@ -65,23 +65,23 @@ class Coin:
     def roundY(self):
         return round(self.body.position[1])
 
+    def shoot_at(self, x, y):
+        if self.is_immobilized:
+            return False
+        dx = x - self.roundX()
+        dy = y - self.roundY()
+        magnitude = (dx * dx + dy * dy) ** .5
+        magnitude = round(magnitude)
+
+        return self.apply_force(dx, dy, magnitude)
+
     def apply_force(self, dx, dy, magnitude):
+        if self.is_immobilized:
+            return False
+
         self.is_shooting = True
         self.body.velocity = Vec2d(dx, dy) / 10 * 2
-        return
-        angle = Vec2d(dx, dy).angle
-        dx, dy = self.point_on_circle(angle)
-        dy = -dy
-
-        magnitude *= 10 * 2
-        dx += self.x
-        dy += self.y
-        #self.body.apply_force_at_world_point(Vec2d.unit() * magnitude, (dx, dy))
-
-
-        self.dx = dx
-        self.dy = dy
-        self.ticks = magnitude
+        return True
 
     def point_on_circle(self, angle):
         from math import cos, sin, pi

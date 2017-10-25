@@ -10,10 +10,6 @@ import math
 import random
 from collections import defaultdict
 
-
-#t1 = Table()
-#t2 = Table(20, 30)
-#t3 = Table(cols=100)
 class Table:
     def __init__(self, rows=40, cols=50):
         self.header = ""
@@ -148,6 +144,20 @@ class Table:
 
     def get_current_count(self):
         return self.coins[self.current_coin_index]
+
+    def select_coin(self, x, y):
+        best_coin = None
+        for coin in self.coins:
+            if coin.roundX() == x and coin.roundY() == y:
+                best_coin = coin
+
+        if best_coin is not None:
+            self.selected_coin = best_coin
+            self.current_coin_index = self.coins.index(best_coin)
+        return best_coin
+
+    def get_selected_coin(self):
+        return self.selected_coin
 
     def select_current_coin(self):
         if self.highlighted:
