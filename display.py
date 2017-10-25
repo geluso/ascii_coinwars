@@ -108,7 +108,7 @@ class Display:
 
         coin_under_cursor = self.game.table.get_coin(self.cursorx, self.cursory)
         # start from the top if there's no coin under the cursor
-        if coin_under_cursor.is_heads is None:
+        if coin_under_cursor is None:
             return enemies[0]
         # or if the cursor is over one of your own
         if coin_under_cursor.is_heads is self.game.get_current_player().is_heads:

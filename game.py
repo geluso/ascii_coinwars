@@ -1,12 +1,13 @@
 import table
-import player
+import human
+import ai
 
 class Game():
     def __init__(self):
         self.table = table.Table()
 
-        p1 = player.Player(is_ai=False, is_heads=True)
-        p2 = player.Player(is_ai=True, is_heads=False)
+        p1 = human.HumanPlayer(is_heads=True)
+        p2 = ai.AIPlayer(is_heads=False)
 
         self.players = [p1, p2]
         self.turn_index = -1
@@ -47,3 +48,4 @@ class Game():
         self.table.show_turn_message = self.turn_message()
         self.turn_index += 1
         self.turn_index %= len(self.players)
+            
