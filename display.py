@@ -3,7 +3,7 @@ class Display:
         self.screen = screen
         self.game = game
         self.cursorx = game.table.cols // 2
-        self.cursory = game.table.rows // 2
+        self.cursory = game.table.rows // 2 + 1
         self.selected_coin = None
 
     def draw(self):
@@ -126,7 +126,7 @@ class Display:
         x, y = self.cursorx, self.cursory
         if self.selected_coin is None:
             coin = self.game.select_coin(x, y)
-            if coin.is_immobilized:
+            if coin and coin.is_immobilized:
                 coin.remind_cant_select = True
             else:
                 self.selected_coin = self.game.select_coin(x, y)
@@ -135,6 +135,7 @@ class Display:
             self.selected_coin = None
 
     def resolve_cursor_movement(self):
+        self.game.table.show_turn_message = False
         for coin in self.game.table.coins:
             coin.is_recently_converted = False
             coin.is_recently_immobilized = False

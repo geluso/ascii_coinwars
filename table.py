@@ -19,6 +19,7 @@ class Table:
         self.space.damping = .9
         self.space.idle_speed_threshold = .1
         self.space.sleep_time_threshold = 1
+        self.show_turn_message = False
 
         def collide(arbiter, space, data):
             shape1, shape2 = arbiter.shapes
@@ -77,6 +78,15 @@ class Table:
             self.cells[row][col] = " "
 
     def set_coin_cells(self, selected, cx, cy):
+        if self.show_turn_message:
+            x = self.cols / 2
+            x -= len(self.show_turn_message) / 2
+            y = self.rows / 2
+
+            x = round(x)
+            y = round(y)
+            self.label_xy(x, y, self.show_turn_message)
+
         for coin in self.coins:
             row = coin.roundY()
             col = coin.roundX()
@@ -96,25 +106,26 @@ class Table:
               self.cells[row][col + 1] = "]"
 
             if coin.is_recently_immobilized:
-                self.label(coin, "IMMOBILIZED!")
+                self.label(coin, "IMMOBILIZED!", xoff=3)
 
             if coin.is_recently_converted:
-                self.label(coin, "CONVERTED!")
+                self.label(coin, "CONVERTED!", xoff=3)
 
             if coin.is_recently_resisted_conversion:
-                self.label(coin, "CANT CONVERT!")
+                self.label(coin, "CANT CONVERT!", xoff=3)
 
     def label(self, coin, msg, xoff=0, yoff=0):
-        row = coin.roundY() + yoff
-        col = coin.roundX() + xoff
+        x = coin.roundX() + xoff
+        y = coin.roundY() + yoff
+        self.label_xy(x, y, msg)
 
-        offset = 3
+    def label_xy(self, x, y, msg, xoff=0, yoff=0):
         # if the message would run into the right wall
-        if (offset + col + len(msg)) > self.cols:
-            offset = -2 - len(msg)
+        if (xoff + x + len(msg)) > self.cols:
+            xoff = -2 - len(msg)
 
         for i in range(len(msg)):
-            self.cells[row][col + offset + i] = msg[i]
+            self.cells[y][x + xoff + i] = msg[i]
 
     def draw_cursor(self, selected, cx, cy):
         prev = self.cells[cy][cx]
