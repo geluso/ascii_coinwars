@@ -10,8 +10,8 @@ import coin
 # 1.043 in.  26.49 mm dollar
 
 class Penny(coin.Coin):
-    def __init__(self, is_heads=False, kind="p", x=0, y=0):
-        coin.Coin.__init__(self, is_heads, kind, x, y)
+    def __init__(self, game=None, is_heads=False, kind="p", x=0, y=0):
+        coin.Coin.__init__(self, game, is_heads, kind, x, y)
         self.body.coin = self
         self.shape.coin = self
 

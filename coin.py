@@ -13,7 +13,8 @@ COIN_COLLISION = 1
 # 1.043 in.  26.49 mm dollar
 
 class Coin:
-    def __init__(self, is_heads=False, kind="q", x=0, y=0):
+    def __init__(self, game=None, is_heads=False, kind="q", x=0, y=0):
+        self.game = game
         self.is_heads = is_heads
         self.kind = kind
         self.x = x
@@ -47,6 +48,14 @@ class Coin:
 
     def collide(self, other):
         pass
+
+    def is_last_on_team(self):
+        if self.game is None:
+            return False
+        coins_on_team = self.game.table.tails
+        if self.is_heads:
+            coins_on_team = self.game.table.heads
+        return len(coins_on_team) == 1
 
     def clone(self):
         coin = Coin(self.is_heads, self.kind, self.body.position.x, self.body.position.y)

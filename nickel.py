@@ -10,8 +10,8 @@ import coin
 # 1.043 in.  26.49 mm dollar
 
 class Nickel(coin.Coin):
-    def __init__(self, is_heads=False, kind="n", x=0, y=0):
-        coin.Coin.__init__(self, is_heads, kind, x, y)
+    def __init__(self, game=None, is_heads=False, kind="n", x=0, y=0):
+        coin.Coin.__init__(self, game, is_heads, kind, x, y)
         self.body.coin = self
         self.shape.coin = self
 
@@ -29,5 +29,8 @@ class Nickel(coin.Coin):
             return
         # nickels immobilize!
         if other.is_heads is not self.is_heads:
-          other.is_immobilized = True
-          other.is_recently_immobilized = True
+            # you can't immobilize the last coin
+            if not other.is_last_on_team():
+                other.is_immobilized = True
+                other.is_recently_immobilized = True
+

@@ -10,8 +10,8 @@ import coin
 # 1.043 in.  26.49 mm dollar
 
 class Dime(coin.Coin):
-    def __init__(self, is_heads=False, kind="d", x=0, y=0):
-        coin.Coin.__init__(self, is_heads, kind, x, y)
+    def __init__(self, game=None, is_heads=False, kind="d", x=0, y=0):
+        coin.Coin.__init__(self, game, is_heads, kind, x, y)
         self.body.coin = self
         self.shape.coin = self
         self.can_convert = False
@@ -33,5 +33,7 @@ class Dime(coin.Coin):
 
         # dimes convert!
         if other.can_convert and other.is_heads is not self.is_heads:
-            other.is_heads = self.is_heads
-            other.is_recently_converted = True
+            # you can't immobilize the last coin
+            if not other.is_last_on_team():
+                other.is_heads = self.is_heads
+                other.is_recently_converted = True
