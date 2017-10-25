@@ -12,17 +12,23 @@ class Game():
         self.turn_index = 0
 
     def select_coin(self, x, y):
-        coin = table.get_coin(x, y)
+        coin = self.table.get_coin(x, y)
         player = self.get_current_player()
 
-        if coin.is_heads and player.is_heads:
-            was_shot = coin.shoot_at(x, y)
+        if coin is None:
+            return None
 
-    def shoot_coin(self, target_x, target_y):
-        coin = table.get_selected_coin()
-        if coin:
-            coin.shoot_to(target_x, target_y)
-            self.next_turn()
+        # prevent the player from selecting coins
+        # that aren't in their control.
+        if coin.is_heads is player.is_heads:
+            return coin
+        return None
+
+    def shoot_coin(self, coin, x, y):
+        if coin is None:
+            return
+        was_shot = coin.shoot_at(x, y)
+        self.next_turn()
 
     def get_current_player(self):
         return self.players[self.turn_index]

@@ -34,11 +34,6 @@ class Table:
         self.rows = rows
         self.cols = cols
 
-        self.path_x0 = 0
-        self.path_y0 = 0
-        self.path_x1 = 0
-        self.path_y1 = 0
-
         self.coins = []
         self.coins.append(Coin(x=10, y=10, is_heads=True))
         self.coins.append(Coin(x=20, y=10, is_heads=True))
@@ -57,11 +52,6 @@ class Table:
         self.coins.append(Nickel(x=35, y=26, is_heads=False))
 
         self.reformat_coin_hud()
-
-        self.current_coin_index = 0
-        self.set_highlight()
-
-        self.selected_coin = None
 
         for coin in self.coins:
             self.space.add(coin.body, coin.shape)
@@ -86,110 +76,65 @@ class Table:
           for col in range(1, self.cols - 1):
             self.cells[row][col] = " "
 
-    def set_coin_cells(self):
+    def set_coin_cells(self, selected, cx, cy):
       for coin in self.coins:
           row = coin.roundY()
           col = coin.roundX()
           self.cells[row][col] = str(coin)
 
-          if (coin is self.highlighted):
+          if coin.roundX() == cx and coin.roundY() == cy:
               self.cells[row][col - 1] = "("
               self.cells[row][col + 1] = ")"
 
-          if (coin is self.selected_coin):
+          if (coin is selected):
               self.cells[row][col - 1] = "["
               self.cells[row][col + 1] = "]"
 
-    def draw_cursor(self):
-        prev = self.cells[self.cursory][self.cursorx]
+    def draw_cursor(self, selected, cx, cy):
+        prev = self.cells[cy][cx]
         if prev is " ":
-          self.cells[self.cursory][self.cursorx] = "_"
-        elif self.selected_coin and self.selected_coin.roundX() == self.cursorx and self.selected_coin.roundY() == self.cursory:
-          self.cells[self.cursory][self.cursorx - 1] = "["
-          self.cells[self.cursory][self.cursorx + 1] = "]"
+          self.cells[cy][cx] = "_"
+        elif selected and selected.roundX() == cx and selected.roundY() == cy:
+          self.cells[cy][cx - 1] = "["
+          self.cells[cy][cx + 1] = "]"
         else:
-          self.cells[self.cursory][self.cursorx - 1] = "("
-          self.cells[self.cursory][self.cursorx + 1] = ")"
+          self.cells[cy][cx - 1] = "("
+          self.cells[cy][cx + 1] = ")"
 
     def __str__(self):
+        return self.draw()
+
+    def draw(self, cx=0, cy=0, selected=None):
         self.set_board_cells()
-        self.draw_path()
-        self.set_coin_cells()
-        self.draw_cursor()
+        if selected:
+            self.draw_path(selected, cx, cy)
+        self.set_coin_cells(selected, cx, cy)
+        # set coin cells and draw cursor are veery similar
+        self.draw_cursor(selected, cx, cy)
 
         result = ""
         for row in range(0, self.rows):
           for col in range(0, self.cols):
             result += self.cells[row][col]
           result += "\n"
-
         return result
 
-    def set_highlight(self):
-        self.highlighted = self.coins[self.current_coin_index]
-        self.cursorx = self.highlighted.roundX()
-        self.cursory = self.highlighted.roundY()
-
-    def cancel_highlight(self):
-        self.highlighted = None
-
-    def select_next_coin(self):
-        self.increment_current_count_index()
-        if (self.get_current_count() is self.selected_coin):
-            self.increment_current_count_index()
-        self.set_highlight()
-
-    def increment_current_count_index(self):
-        self.current_coin_index = (self.current_coin_index + 1) % len(self.coins)
-
-    def get_current_count(self):
-        return self.coins[self.current_coin_index]
-
-    def select_coin(self, x, y):
-        best_coin = None
+    def get_coin(self, x, y):
         for coin in self.coins:
+            # exact match
             if coin.roundX() == x and coin.roundY() == y:
-                best_coin = coin
+                return coin
+        return None
 
-        if best_coin is not None:
-            self.selected_coin = best_coin
-            self.current_coin_index = self.coins.index(best_coin)
-        return best_coin
-
-    def get_selected_coin(self):
-        return self.selected_coin
-
-    def select_current_coin(self):
-        if self.highlighted:
-          self.selected_coin = self.coins[self.current_coin_index]
-        else:
-          for coin in self.coins:
-            if coin.roundX() == self.cursorx and coin.roundY() == self.cursory:
-              self.selected_coin = coin
-
-    def reset_selections(self):
-        self.selected_coin = None
-        self.current_coin_index = 0
-        self.set_highlight()
-
-    def clear(self):
-      self.selected_coin = None
-      self.highlighted = None
-      self.current_coin_index = -1
-      self.clear_path()
-
-    def clear_path(self):
-      self.path_x0 = -1
-      self.path_y0 = -1
-      self.path_x1 = -1
-      self.path_y1 = -1
-
-    def draw_path(self):
-        if not (self.selected_coin and self.cursorx > 0 and self.cursory > 0):
+    def draw_path(self, selected, cx, cy):
+        if selected is None:
             return
+        if cx < 0 or cy < 0:
+            return
+
         # is the line going left?
-        x0, y0 = self.selected_coin.roundX(), self.selected_coin.roundY()
-        x1, y1 = self.cursorx, self.cursory
+        x0, y0 = selected.roundX(), selected.roundY()
+        x1, y1 = cx, cy
         if x1 < x0:
           # swap the two points
           x0, y0, x1, y1 = x1, y1, x0, y0
@@ -318,10 +263,6 @@ class Table:
             if not coin.is_dirty():
                 continue
             clone = coin.clone()
-            if self.highlighted is coin:
-                self.highlighted = clone
-            if self.selected_coin is coin:
-                self.selected_coin = clone
             self.space.remove(coin.body)
             self.space.remove(coin.shape)
             self.space.add(clone.body, clone.shape)
