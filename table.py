@@ -77,18 +77,33 @@ class Table:
             self.cells[row][col] = " "
 
     def set_coin_cells(self, selected, cx, cy):
-      for coin in self.coins:
-          row = coin.roundY()
-          col = coin.roundX()
-          self.cells[row][col] = str(coin)
+        for coin in self.coins:
+            row = coin.roundY()
+            col = coin.roundX()
+            self.cells[row][col] = str(coin)
 
-          if coin.roundX() == cx and coin.roundY() == cy:
+            if coin.roundX() == cx and coin.roundY() == cy:
               self.cells[row][col - 1] = "("
               self.cells[row][col + 1] = ")"
 
-          if (coin is selected):
+            if (coin is selected):
               self.cells[row][col - 1] = "["
               self.cells[row][col + 1] = "]"
+
+            if coin.is_immobilized:
+                self.label(coin, "IMMOBILIZED!")
+
+    def label(self, coin, msg):
+        row = coin.roundY()
+        col = coin.roundX()
+
+        offset = 3
+        # if the message would run into the right wall
+        if (offset + col + len(msg)) > self.cols:
+            offset = -2 - len(msg)
+
+        for i in range(len(msg)):
+            self.cells[row][col + offset + i] = msg[i]
 
     def draw_cursor(self, selected, cx, cy):
         prev = self.cells[cy][cx]
@@ -268,6 +283,4 @@ class Table:
             self.space.add(clone.body, clone.shape)
             clones.append(clone)
         self.coins = clones
-
-
 
