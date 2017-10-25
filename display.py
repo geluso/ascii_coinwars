@@ -142,6 +142,6 @@ class Display:
             coin.remind_cant_select = False
             coin.is_recently_resisted_conversion = False
 
-    def quit():
+    def quit(self):
         import sys
         sys.exit()
