@@ -7,7 +7,7 @@ class AIPlayer(player.Player):
         player.Player.__init__(self, is_ai, is_heads)
 
     def take_turn(self, display, game):
-        time.sleep(3)
+        time.sleep(1)
 
         my_coins = game.table.tails
         their_coins = game.table.heads
@@ -17,5 +17,12 @@ class AIPlayer(player.Player):
 
         my_coin = random.sample(my_coins, 1)[0]
         target = random.sample(their_coins, 1)[0]
+
+        display.selected_coin = my_coin
+        display.cursorx = target.roundX()
+        display.cursory = target.roundY()
+        display.draw()
+
+        time.sleep(3)
 
         game.shoot_coin(my_coin, target.roundX(), target.roundY())
