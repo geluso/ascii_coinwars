@@ -39,9 +39,11 @@ class AIPlayer(player.Player):
         return my_coin, target
 
     def explore(self, game, my_coins, their_coins):
-        best_shooter = None
-        best_target = None
-        best_score = -math.inf
+        class ExploredScore:
+            def __init__(self, shooter, target, score):
+                self.shooter = shooter
+                self.target = target
+                self.score = score
 
         scores = []
         for my_coin in my_coins:
@@ -51,15 +53,12 @@ class AIPlayer(player.Player):
                 simulation.simulate()
 
                 score = self.score(simulation)
+                score = ExploredScore(my_coin, their_coin, score)
                 scores.append(score)
 
-                if score > best_score:
-                    best_score = score
-                    best_shooter = my_coin
-                    best_target = their_coin
-
-        game.table.header = str(scores)
-        return best_shooter, best_target
+        scores = sorted(scores, key=lambda score: score.score, reverse=True)
+        choice = random.choice(scores[:3])
+        return choice.shooter, choice.target
 
     def score(self, simulation):
         table = simulation.simulation.table
