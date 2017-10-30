@@ -1,18 +1,21 @@
 import table
 import human
 import ai
+import copy
 
 class Game():
-    def __init__(self):
+    def __init__(self, tag=None):
         self.table = table.Table()
 
         p1 = human.HumanPlayer(is_heads=True)
+        #p2 = human.HumanPlayer(is_heads=False)
         #p1 = ai.AIPlayer(is_heads=True)
-        p2 = ai.AIPlayer(is_heads=False)
+        p2 = human.HumanPlayer(is_heads=False)
+        #p2 = ai.AIPlayer(is_heads=False)
 
         self.players = [p1, p2]
         self.turn_index = -1
-        self.next_turn()
+        self.end_turn()
 
     def select_coin(self, x, y):
         coin = self.table.get_coin(x, y)
@@ -27,11 +30,13 @@ class Game():
             return coin
         return None
 
-    def shoot_coin(self, coin, x, y):
+    def shoot_coin(self, coin, x=0, y=0, target=None):
         if coin is None:
             return
-        was_shot = coin.shoot_at(x, y)
-        self.next_turn()
+        if target:
+            x = target.roundX()
+            y = target.roundY()
+        was_shot = coin.shoot_at(x, y, game=self)
 
     def get_current_player(self):
         return self.players[self.turn_index]
@@ -63,11 +68,27 @@ class Game():
             turn = str(player.__class__)
         return turn
 
-    def next_turn(self):
+    def end_turn(self):
         if self.is_game_over():
             return
+
+        for coin in self.table.coins:
+            coin.is_shooting = False
 
         self.turn_index += 1
         self.turn_index %= len(self.players)
         self.table.show_turn_message = self.turn_message()
             
+    def get_simulation(self):
+        return GameSimulation(self)
+
+class GameSimulation():
+    def __init__(self, game):
+        #self = copy.deepcopy(game)
+        self.simulation = copy.deepcopy(game)
+
+    def simulate(self):
+        is_running = self.simulation.table.tick()
+        while is_running:
+            is_running = self.simulation.table.tick()
+

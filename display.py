@@ -133,6 +133,7 @@ class Display:
         else:
             self.game.shoot_coin(self.selected_coin, x, y)
             self.selected_coin = None
+            return "shot"
 
     def resolve_cursor_movement(self):
         self.game.table.show_turn_message = False

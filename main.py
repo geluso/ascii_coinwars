@@ -5,8 +5,6 @@ import time
 import curses
 from curses import wrapper
 
-USE_MY_WRAPPER = False
-
 def loop(screen):
     game = Game()
     display = Display(screen, game)
@@ -14,6 +12,9 @@ def loop(screen):
     is_animated = False
     while True:
         is_animated = game.table.tick()
+
+        msg = ",".join([str(coin.is_shooting) for coin in game.table.coins])
+        game.table.header = msg
         display.draw()
 
         if is_animated:
@@ -22,6 +23,7 @@ def loop(screen):
         player = game.get_current_player()
         player.take_turn(display, game)
           
+USE_MY_WRAPPER = False
 if USE_MY_WRAPPER:
     import my_wrapper
     my_wrapper.my_wrapper(loop)

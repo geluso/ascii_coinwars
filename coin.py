@@ -58,7 +58,7 @@ class Coin:
         return len(coins_on_team) == 1
 
     def clone(self):
-        coin = Coin(self.is_heads, self.kind, self.body.position.x, self.body.position.y)
+        coin = Coin(game=self.game, is_heads=self.is_heads, kind=self.kind, x=self.body.position.x, y=self.body.position.y)
         coin.is_immobilized = self.is_immobilized
         return coin
 
@@ -78,9 +78,17 @@ class Coin:
     def roundY(self):
         return round(self.body.position[1])
 
-    def shoot_at(self, x, y):
+    def shoot_at(self, x, y, game=None):
+        # reset all other coins so they don't think their currently shooting.
+        for coin in game.table.coins:
+            coin.is_shooting = False
+
+        # this is the only coin currently shooting
+        self.is_shooting = True
+
         if self.is_immobilized:
             return False
+
         dx = x - self.roundX()
         dy = y - self.roundY()
         magnitude = (dx * dx + dy * dy) ** .5
@@ -91,8 +99,6 @@ class Coin:
     def apply_force(self, dx, dy, magnitude):
         if self.is_immobilized:
             return False
-
-        self.is_shooting = True
         self.body.velocity = Vec2d(dx, dy) / 10 * 2
         return True
 
@@ -113,5 +119,5 @@ class Coin:
         return result
 
     def __repr__(self):
-        return f"{str(self)} ({self.x},{self.y})"
+        return f"{str(self)} ({self.roundX()},{self.roundY()})"
  

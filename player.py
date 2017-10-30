@@ -10,7 +10,7 @@ class Player:
 
     def take_human_turn(self):
         char = screen.getkey()
-        if char is "\t":
+        if char is "t\t":
             display.target_next_coin()
         if char in "e\r\n":
             display.select_or_shoot_coin()

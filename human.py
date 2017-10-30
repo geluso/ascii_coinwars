@@ -6,10 +6,12 @@ class HumanPlayer(player.Player):
 
     def take_turn(self, display, game):
         char = display.screen.getkey()
-        if char is "\t":
+        if char in "t\t":
             display.target_next_coin()
         if char in "e\r\n":
-            display.select_or_shoot_coin()
+            result = display.select_or_shoot_coin()
+            if result is "shot":
+                game.end_turn()
         if char in 'qx':
             display.quit()
         if char is 'c':

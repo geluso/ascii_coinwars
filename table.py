@@ -6,12 +6,14 @@ from dime import Dime
 from nickel import Nickel
 from dollar import Dollar
 
+import copy
 import math
 import random
 from collections import defaultdict
 
 class Table:
     def __init__(self, rows=40, cols=50):
+        self.ticks = 0
         self.header = ""
         self.needs_clearing = False
         self.space = pymunk.Space()
@@ -28,7 +30,6 @@ class Table:
             coin2.collide(coin1)
 
         collision_handler = self.space.add_collision_handler(1, 1)
-        #collision_handler.begin = collide
         collision_handler.post_solve = collide
 
         self.cells = defaultdict(lambda: defaultdict(lambda: " "))
@@ -36,6 +37,7 @@ class Table:
         self.cols = cols
 
         self.coins = []
+
         self.coins.append(Coin(x=10, y=10, is_heads=True))
         self.coins.append(Coin(x=20, y=10, is_heads=True))
         self.coins.append(Coin(x=30, y=10, is_heads=True))
@@ -262,6 +264,8 @@ class Table:
         return False
 
     def tick(self):
+        self.ticks += 1
+
         dt = 1.0/60
         self.space.step(dt)
         is_animated = False
@@ -306,3 +310,5 @@ class Table:
             clones.append(clone)
         self.coins = clones
 
+    def clone(self):
+        return copy.deepcopy(self)

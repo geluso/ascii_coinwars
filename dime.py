@@ -11,7 +11,7 @@ import coin
 
 class Dime(coin.Coin):
     def __init__(self, game=None, is_heads=False, kind="d", x=0, y=0):
-        coin.Coin.__init__(self, game, is_heads, kind, x, y)
+        coin.Coin.__init__(self, game=game, is_heads=is_heads, kind=kind, x=x, y=y)
         self.body.coin = self
         self.shape.coin = self
         self.can_convert = False
@@ -21,7 +21,8 @@ class Dime(coin.Coin):
         self.create_body_shape()
 
     def clone(self):
-        dime = Dime(self.is_heads, self.kind, self.body.position.x, self.body.position.y)
+        dime = Dime(game=self.game, is_heads=self.is_heads, kind=self.kind, x=self.body.position.x, y=self.body.position.y)
+        dime.is_shooting = False
         dime.is_immobilized = self.is_immobilized
         return dime
 
