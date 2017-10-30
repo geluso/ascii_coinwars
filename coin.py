@@ -83,11 +83,11 @@ class Coin:
         for coin in game.table.coins:
             coin.is_shooting = False
 
-        # this is the only coin currently shooting
-        self.is_shooting = True
-
         if self.is_immobilized:
             return False
+
+        # this is the only coin currently shooting
+        self.is_shooting = True
 
         dx = x - self.roundX()
         dy = y - self.roundY()

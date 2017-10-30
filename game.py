@@ -72,9 +72,6 @@ class Game():
         if self.is_game_over():
             return
 
-        for coin in self.table.coins:
-            coin.is_shooting = False
-
         self.turn_index += 1
         self.turn_index %= len(self.players)
         self.table.show_turn_message = self.turn_message()
