@@ -10,8 +10,8 @@ class Game():
         p1 = human.HumanPlayer(is_heads=True)
         #p2 = human.HumanPlayer(is_heads=False)
         #p1 = ai.AIPlayer(is_heads=True)
-        p2 = human.HumanPlayer(is_heads=False)
-        #p2 = ai.AIPlayer(is_heads=False)
+        #p2 = human.HumanPlayer(is_heads=False)
+        p2 = ai.AIPlayer(is_heads=False)
 
         self.players = [p1, p2]
         self.turn_index = -1
