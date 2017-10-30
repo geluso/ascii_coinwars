@@ -12,7 +12,7 @@ import random
 from collections import defaultdict
 
 class Table:
-    def __init__(self, rows=40, cols=50):
+    def __init__(self, rows=40, cols=50, game=None):
         self.ticks = 0
         self.header = ""
         self.needs_clearing = False
@@ -38,21 +38,21 @@ class Table:
 
         self.coins = []
 
-        self.coins.append(Coin(x=10, y=10, is_heads=True))
-        self.coins.append(Coin(x=20, y=10, is_heads=True))
-        self.coins.append(Coin(x=30, y=10, is_heads=True))
-        self.coins.append(Coin(x=40, y=10, is_heads=True))
-        self.coins.append(Dime(x=15, y=14, is_heads=True))
-        self.coins.append(Dollar(x=25, y=14, is_heads=True))
-        self.coins.append(Nickel(x=35, y=14, is_heads=True))
+        self.coins.append(Coin(x=10, y=10, is_heads=True, game=game))
+        self.coins.append(Coin(x=20, y=10, is_heads=True, game=game))
+        self.coins.append(Coin(x=30, y=10, is_heads=True, game=game))
+        self.coins.append(Coin(x=40, y=10, is_heads=True, game=game))
+        self.coins.append(Dime(x=15, y=14, is_heads=True, game=game))
+        self.coins.append(Dollar(x=25, y=14, is_heads=True, game=game))
+        self.coins.append(Nickel(x=35, y=14, is_heads=True, game=game))
 
-        #self.coins.append(Coin(x=10, y=30, is_heads=False))
-        #self.coins.append(Coin(x=20, y=30, is_heads=False))
-        #self.coins.append(Coin(x=30, y=30, is_heads=False))
-        #self.coins.append(Coin(x=40, y=30, is_heads=False))
-        self.coins.append(Dime(x=15, y=26, is_heads=False))
-        #self.coins.append(Dollar(x=25, y=26, is_heads=False))
-        #self.coins.append(Nickel(x=35, y=26, is_heads=False))
+        #self.coins.append(Coin(x=10, y=30, is_heads=False, game=game))
+        #self.coins.append(Coin(x=20, y=30, is_heads=False, game=game))
+        #self.coins.append(Coin(x=30, y=30, is_heads=False, game=game))
+        #self.coins.append(Coin(x=40, y=30, is_heads=False, game=game))
+        self.coins.append(Dime(x=15, y=26, is_heads=False, game=game))
+        #self.coins.append(Dollar(x=25, y=26, is_heads=False, game=game))
+        #self.coins.append(Nickel(x=35, y=26, is_heads=False, game=game))
 
         self.reformat_coin_hud()
 

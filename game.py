@@ -5,7 +5,7 @@ import copy
 
 class Game():
     def __init__(self, tag=None):
-        self.table = table.Table()
+        self.table = table.Table(game=self)
 
         p1 = human.HumanPlayer(is_heads=True)
         #p2 = human.HumanPlayer(is_heads=False)
