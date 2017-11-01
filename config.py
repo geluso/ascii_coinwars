@@ -1,13 +1,15 @@
 import ai, human
 
 def format_prompt(option):
-    msg = "(" + option[0] + ")" + option[1:]
+    msg = "  (" + option[0] + ")" + option[1:]
     return msg
 
 def valid_responses(options):
     return [option[0] for option in options]
 
-def response_from_options(screen, options):
+def response_from_options(screen, options, title=None):
+    if title:
+        screen.addstr(title + "\n")
     for option in options:
         prompt = format_prompt(option) + "\n"
         screen.addstr(prompt)
@@ -21,15 +23,11 @@ class Configuration:
         self.is_configured = False
 
     def prompt_configuration(self, screen):
-        options = ["default", "human vs human", "ai vs ai", "custom"]
-        response = response_from_options(screen, options)
+        options = ["default (human vs ai)", "human vs human", "ai vs ai", "custom", "xit"]
+        response = response_from_options(screen, options, title="Select game type:")
 
-        # default
-        if response is "d":
-            p1 = self.human_player()
-            p2 = self.ai_player()
         # humans
-        elif response is "h":
+        if response is "h":
             p1 = self.human_player()
             p2 = self.human_player()
         # ais
@@ -38,27 +36,29 @@ class Configuration:
             p2 = self.ai_player()
         # custom
         elif response is "c":
-            p1 = self.prompt_human_or_ai(screen)
-            p2 = self.prompt_human_or_ai(screen)
+            p1 = self.prompt_human_or_ai(screen, prompt="Player 1: ")
+            p2 = self.prompt_human_or_ai(screen, prompt="Player 2: ")
         elif response is "x":
             import sys
             sys.exit()
+        # default
+        else:
+            p1 = self.human_player()
+            p2 = self.ai_player()
 
         self.players = [p1, p2]
         self.is_configured = True
         return self.players
 
-    def prompt_human_or_ai(self, screen):
+    def prompt_human_or_ai(self, screen, prompt=""):
         options = ["human", "ai"]
-        response = response_from_options(screen, options)
+        title = prompt + "Human or AI?"
+        response = response_from_options(screen, options, title=title)
 
         if response is "h":
             player = self.human_player()
-        elif response is "a":
-            player = self.configure_ai_player(screen)
         else:
-            print("invalid input")
-            sys.exit()
+            player = self.configure_ai_player(screen)
         return player
 
     def human_player(self):
@@ -66,8 +66,8 @@ class Configuration:
         return player
 
     def configure_ai_player(self, screen):
-        screen.addstr("AI strength [1-9]: \n")
-        response = screen.getkey()
+        options = ["1 easy", "5 medium", "9 hard"]
+        response = response_from_options(screen, options, title="AI difficulty [1-9]:")
         number = int("123456789".index(response))
 
         # manually adjust because lower is actually

@@ -9,6 +9,7 @@ from curses import wrapper
 
 def loop(screen):
     welcome = WelcomeScreen(screen)
+    welcome.display_title_screen()
 
     config = Configuration()
     if not config.is_configured:

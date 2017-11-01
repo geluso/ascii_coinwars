@@ -37,9 +37,10 @@ __        ___    ____  ____
   \ V  V / ___ \|  _ < ___) |
    \_/\_/_/   \_\_| \_\____/ 
 
+      [press any key]
         """
         self.screen.addstr(title2 + "\n")
         self.screen.refresh()
 
         # wait for keypress
-        keypress = screen.getkey()
+        keypress = self.screen.getkey()
