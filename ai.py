@@ -72,6 +72,12 @@ class AIPlayer(player.Player):
                 scores.append(score)
 
         scores = sorted(scores, key=lambda score: score.score, reverse=True)
+
+        # 9 is the "hardest" AI someone can select
+        # the scores are sorted so the best is at the front
+        # 9 (hard-coded) minus difficulty means the AI always picks the best
+        # difficulty 0 means the AI will choose randomly among the top 9 choices
+        max_worst = 9 - self.difficulty * 3
         choice = random.choice(scores[:3])
 
         shooter = my_coins[choice.shooter_i]
