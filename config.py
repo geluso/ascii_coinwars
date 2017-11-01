@@ -29,6 +29,13 @@ class Configuration:
         self.is_configured = False
 
     def prompt_configuration(self, screen):
+        confirmed = False
+        while not confirmed:
+            self.display_prompt(screen)
+            confirmed = self.confirm(screen)
+        self.is_configured = True
+
+    def display_prompt(self, screen):
         options = ["default (human vs ai)", "human vs human", "ai vs ai", "custom", "xit"]
         response = response_from_options(screen, options, title="Select game type:")
 
@@ -53,7 +60,6 @@ class Configuration:
             p2 = self.ai_player()
 
         self.players = [p1, p2]
-        self.confirm(screen)
 
     def format_player(self, player):
         if not player.is_ai:
@@ -69,7 +75,9 @@ class Configuration:
         response = response_from_options(screen, options, title="Start game?")
 
         if response is "y":
-            self.is_configured = True
+            return True
+        else:
+            return False
 
     def prompt_human_or_ai(self, screen, prompt=""):
         options = ["human", "ai"]
