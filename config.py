@@ -74,10 +74,9 @@ class Configuration:
         options = ["yes", "no"]
         response = response_from_options(screen, options, title="Start game?")
 
-        if response is "y":
-            return True
-        else:
+        if response is "n":
             return False
+        return True
 
     def prompt_human_or_ai(self, screen, prompt=""):
         options = ["human", "ai"]

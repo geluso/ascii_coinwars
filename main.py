@@ -23,9 +23,6 @@ def loop(screen):
         back_to_menu = False
         while not back_to_menu:
             is_animated = game.table.tick()
-
-            msg = ",".join([str(coin.is_shooting) for coin in game.table.coins])
-            game.table.header = msg
             display.draw()
 
             if is_animated:
