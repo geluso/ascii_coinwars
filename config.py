@@ -7,13 +7,19 @@ def format_prompt(option):
 def valid_responses(options):
     return [option[0] for option in options]
 
-def response_from_options(screen, options, title=None):
+def display_options(screen, options, title=None, is_formatted=True):
     if title:
         screen.addstr(title + "\n")
     for option in options:
-        prompt = format_prompt(option) + "\n"
+        if is_formatted:
+            prompt = format_prompt(option) + "\n"
+        else:
+            prompt = option + "\n"
         screen.addstr(prompt)
     screen.refresh()
+
+def response_from_options(screen, options, title=None):
+    display_options(screen, options, title)
     response = screen.getkey()
     return response
 
@@ -47,8 +53,23 @@ class Configuration:
             p2 = self.ai_player()
 
         self.players = [p1, p2]
-        self.is_configured = True
-        return self.players
+        self.confirm(screen)
+
+    def format_player(self, player):
+        if not player.is_ai:
+            return "  Human"
+        else:
+            return "  AI (" + str(player.difficulty) + ")"
+
+    def confirm(self, screen):
+        players_str = [self.format_player(player) for player in self.players]
+        display_options(screen, players_str, title="Players:", is_formatted=False)
+
+        options = ["yes", "no"]
+        response = response_from_options(screen, options, title="Start game?")
+
+        if response is "y":
+            self.is_configured = True
 
     def prompt_human_or_ai(self, screen, prompt=""):
         options = ["human", "ai"]
@@ -68,12 +89,8 @@ class Configuration:
     def configure_ai_player(self, screen):
         options = ["1 easy", "5 medium", "9 hard"]
         response = response_from_options(screen, options, title="AI difficulty [1-9]:")
-        number = int("123456789".index(response))
+        difficulty = int("0123456789".index(response))
 
-        # manually adjust because lower is actually
-        # harder, which is non-intuitive for input.
-        difficulty = 10 - number
-      
         bot = self.ai_player(difficulty)
         return bot
 

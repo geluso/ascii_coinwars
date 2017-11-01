@@ -18,7 +18,7 @@ class AIPlayer(player.Player):
     # available on each turn
     def __init__(self, is_ai=True, is_heads=False, ai_difficulty=8):
         player.Player.__init__(self, is_ai, is_heads)
-        self.ai_difficulty = ai_difficulty
+        self.difficulty = ai_difficulty
 
     def take_turn(self, display, game):
         my_coins = game.table.tails
