@@ -77,8 +77,8 @@ class AIPlayer(player.Player):
         # the scores are sorted so the best is at the front
         # 9 (hard-coded) minus difficulty means the AI always picks the best
         # difficulty 0 means the AI will choose randomly among the top 9 choices
-        max_worst = 9 - self.difficulty * 3
-        choice = random.choice(scores[:3])
+        max_worst = self.difficulty * 3
+        choice = random.choice(scores[:max_worst])
 
         shooter = my_coins[choice.shooter_i]
         target = their_coins[choice.target_i]

@@ -95,8 +95,8 @@ class Configuration:
         return player
 
     def configure_ai_player(self, screen):
-        options = ["1 easy", "5 medium", "9 hard"]
-        response = response_from_options(screen, options, title="AI difficulty [1-9]:")
+        options = ["0 hardest", "5 medium", "9 easy"]
+        response = response_from_options(screen, options, title="AI difficulty [0-9]:")
         difficulty = int("0123456789".index(response))
 
         bot = self.ai_player(difficulty)
