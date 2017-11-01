@@ -4,16 +4,14 @@ import ai
 import copy
 
 class Game():
-    def __init__(self, tag=None):
+    def __init__(self, players=None, tag=None):
+        self.players = players
+
+        players[0].is_heads = True
+        players[1].is_heads = False
+
         self.table = table.Table(game=self)
 
-        p1 = human.HumanPlayer(is_heads=True)
-        #p2 = human.HumanPlayer(is_heads=False)
-        #p1 = ai.AIPlayer(is_heads=True)
-        p2 = ai.AIPlayer(is_heads=False)
-        #p2 = human.HumanPlayer(is_heads=False)
-
-        self.players = [p1, p2]
         self.turn_index = -1
         self.end_turn()
 

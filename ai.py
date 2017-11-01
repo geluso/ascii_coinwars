@@ -10,8 +10,15 @@ import dime
 import dollar
 
 class AIPlayer(player.Player):
-    def __init__(self, is_ai=True, is_heads=False):
+    # ai_difficulty represents an index in a list
+    # the list is moves the AI has simulated and scored.
+    # the list is sorted with the best-scored moves at the front, at index zero.
+    # setting ai_difficulty to 0 means the AI always chooses the absolute best move.
+    # ai_difficulty is clamped between 0 and the length of whatever choices are
+    # available on each turn
+    def __init__(self, is_ai=True, is_heads=False, ai_difficulty=8):
         player.Player.__init__(self, is_ai, is_heads)
+        self.ai_difficulty = ai_difficulty
 
     def take_turn(self, display, game):
         my_coins = game.table.tails

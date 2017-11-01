@@ -1,12 +1,20 @@
 from game import Game
 from display import Display
+from config import Configuration
+from welcome import WelcomeScreen
 
 import time
 import curses
 from curses import wrapper
 
 def loop(screen):
-    game = Game()
+    welcome = WelcomeScreen(screen)
+
+    config = Configuration()
+    if not config.is_configured:
+      config.prompt_configuration(screen)
+
+    game = Game(config.players)
     display = Display(screen, game)
 
     is_animated = False
