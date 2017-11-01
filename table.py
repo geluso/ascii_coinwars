@@ -46,13 +46,13 @@ class Table:
         self.coins.append(Dollar(x=25, y=14, is_heads=True, game=game))
         self.coins.append(Nickel(x=35, y=14, is_heads=True, game=game))
 
-        #self.coins.append(Coin(x=10, y=30, is_heads=False, game=game))
-        #self.coins.append(Coin(x=20, y=30, is_heads=False, game=game))
-        #self.coins.append(Coin(x=30, y=30, is_heads=False, game=game))
-        #self.coins.append(Coin(x=40, y=30, is_heads=False, game=game))
+        self.coins.append(Coin(x=10, y=30, is_heads=False, game=game))
+        self.coins.append(Coin(x=20, y=30, is_heads=False, game=game))
+        self.coins.append(Coin(x=30, y=30, is_heads=False, game=game))
+        self.coins.append(Coin(x=40, y=30, is_heads=False, game=game))
         self.coins.append(Dime(x=15, y=26, is_heads=False, game=game))
-        #self.coins.append(Dollar(x=25, y=26, is_heads=False, game=game))
-        #self.coins.append(Nickel(x=35, y=26, is_heads=False, game=game))
+        self.coins.append(Dollar(x=25, y=26, is_heads=False, game=game))
+        self.coins.append(Nickel(x=35, y=26, is_heads=False, game=game))
 
         self.reformat_coin_hud()
 

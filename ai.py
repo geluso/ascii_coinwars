@@ -41,24 +41,36 @@ class AIPlayer(player.Player):
     def explore(self, game, my_coins, their_coins):
         class ExploredScore:
             def __init__(self, shooter, target, score):
-                self.shooter = shooter
-                self.target = target
+                self.shooter_i = shooter
+                self.target_i = target
                 self.score = score
 
         scores = []
-        for my_coin in my_coins:
-            for their_coin in their_coins:
+        for my_i, _ in enumerate(my_coins):
+            for their_i, _ in enumerate(their_coins):
                 simulation = game.get_simulation()
+
+                if self.is_heads:
+                    my_coin = simulation.simulation.table.heads[my_i]
+                    their_coin = simulation.simulation.table.tails[their_i]
+                else:
+                    my_coin = simulation.simulation.table.tails[my_i]
+                    their_coin = simulation.simulation.table.heads[their_i]
+
                 simulation.simulation.shoot_coin(my_coin, target=their_coin)
                 simulation.simulate()
 
                 score = self.score(simulation)
-                score = ExploredScore(my_coin, their_coin, score)
+                score = ExploredScore(my_i, their_i, score)
                 scores.append(score)
 
         scores = sorted(scores, key=lambda score: score.score, reverse=True)
         choice = random.choice(scores[:3])
-        return choice.shooter, choice.target
+
+        shooter = my_coins[choice.shooter_i]
+        target = their_coins[choice.target_i]
+
+        return shooter, target
 
     def score(self, simulation):
         table = simulation.simulation.table
