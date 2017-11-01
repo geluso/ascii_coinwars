@@ -34,7 +34,8 @@ def loop(screen):
             if not game.is_game_over():
                 player = game.get_current_player()
                 player.take_turn(display, game)
-
+            else:
+                # quit or return to main menu
                 key = screen.getkey()
                 if key is "n" or key is "m":
                     back_to_menu = True
