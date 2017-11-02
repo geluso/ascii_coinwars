@@ -1,0 +1,2 @@
+import coinwars
+coinwars.run()
