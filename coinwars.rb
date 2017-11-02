@@ -1,7 +1,7 @@
 class Coinwars < Formula
   desc "A playable ASCII digitization of Coin Wars, a turn-based tactical strategy game pitting teams
   homepage "http://coinwars.org/ascii"
-  url "https://github.com/geluso/ascii_coinwars/archive/1.0.0.tar.gz"
+  url "https://github.com/geluso/ascii_coinwars/archive/1.0.1.tar.gz"
   sha256 "c1759b94e5f145d9dac2d022256e99618fb6316eaea2e9c43bb7cb356dfcdb01"
 
   depends_on "python3"
