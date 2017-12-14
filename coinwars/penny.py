@@ -1,4 +1,4 @@
-from .coin import Coin
+from coin import Coin
 
 # penny         nickel  dime    quarter half dollar     dollar
 # 2.500 g	5.000 g	2.268 g	5.670 g	11.340 g	8.1 g

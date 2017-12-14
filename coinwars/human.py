@@ -1,4 +1,4 @@
-from .player import Player
+from player import Player
 
 class HumanPlayer(Player):
     def __init__(self, is_ai=False, is_heads=False):
@@ -25,4 +25,3 @@ class HumanPlayer(Player):
                 display.move_cursor_up()
             if char in "lKEY_RIGHT":
                 display.move_cursor_right()
-

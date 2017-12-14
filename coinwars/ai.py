@@ -1,13 +1,13 @@
 import math
 import random
 import time
-from .player import Player
+from player import Player
 
-from .coin import Coin
-from .penny import Penny
-from .nickel import Nickel
-from .dime import Dime
-from .dollar import Dollar
+from coin import Coin
+from penny import Penny
+from nickel import Nickel
+from dime import Dime
+from dollar import Dollar
 
 class AIPlayer(Player):
     # ai_difficulty represents an index in a list

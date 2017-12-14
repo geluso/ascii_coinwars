@@ -1,5 +1,5 @@
-from .ai import AIPlayer
-from .human import HumanPlayer
+from ai import AIPlayer
+from human import HumanPlayer
 
 def format_prompt(option):
     msg = "  (" + option[0] + ")" + option[1:]

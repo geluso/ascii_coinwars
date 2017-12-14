@@ -1,10 +1,10 @@
 import pymunk
 from pymunk import Vec2d
 from pymunk import pygame_util
-from .coin import Coin
-from .dime import Dime
-from .nickel import Nickel
-from .dollar import Dollar
+from coin import Coin
+from dime import Dime
+from nickel import Nickel
+from dollar import Dollar
 
 import copy
 import math

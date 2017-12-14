@@ -1,7 +1,7 @@
-from .game import Game
-from .display import Display
-from .config import Configuration
-from .welcome import WelcomeScreen
+from game import Game
+from display import Display
+from config import Configuration
+from welcome import WelcomeScreen
 
 import time
 import curses

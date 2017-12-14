@@ -1,6 +1,6 @@
-from .table import Table
-from .human import HumanPlayer
-from .ai import AIPlayer
+from table import Table
+from human import HumanPlayer
+from ai import AIPlayer
 import copy
 
 class Game():
@@ -86,4 +86,3 @@ class GameSimulation():
         is_running = self.simulation.table.tick()
         while is_running:
             is_running = self.simulation.table.tick()
-

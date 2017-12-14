@@ -1,4 +1,4 @@
-from .coin import Coin
+from coin import Coin
 
 # penny         nickel  dime    quarter half dollar     dollar
 # 2.500 g	5.000 g	2.268 g	5.670 g	11.340 g	8.1 g
@@ -33,4 +33,3 @@ class Nickel(Coin):
             if not other.is_last_on_team():
                 other.is_immobilized = True
                 other.is_recently_immobilized = True
-

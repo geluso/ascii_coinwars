@@ -1,4 +1,4 @@
-from .game import Game
+from game import Game
 
 def print_coins(coins):
     for i, coin in enumerate(coins):
