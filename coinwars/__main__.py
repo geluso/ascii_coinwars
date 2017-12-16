@@ -60,3 +60,6 @@ def run():
           stdscr.keypad(0)
           curses.echo()
           curses.endwin()
+
+if __name__ == "__main__":
+    run()
