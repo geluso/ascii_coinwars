@@ -91,7 +91,7 @@ class Configuration:
         return player
 
     def human_player(self):
-        player = human.HumanPlayer()
+        player = HumanPlayer()
         return player
 
     def configure_ai_player(self, screen):
@@ -103,5 +103,5 @@ class Configuration:
         return bot
 
     def ai_player(self, ai_difficulty=8):
-      bot = ai.AIPlayer(ai_difficulty=ai_difficulty)
+      bot = AIPlayer(ai_difficulty=ai_difficulty)
       return bot
