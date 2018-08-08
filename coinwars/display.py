@@ -40,10 +40,30 @@ class Display:
 
         x, y = self.cursorx, self.cursory
         selected = self.selected_coin
+
         table_str = game.table.draw(x, y, selected)
+        table_str = self.resize(screen, table_str)
 
         screen.addstr(table_str)
         screen.refresh()
+
+
+    # resize the table so it's no bigger than the dimensions of the screen
+    def resize(self, screen, table_str):
+        dim = screen.getmaxyx()
+
+        # eight lines of header info at top of screen
+        header_lines = 8
+
+        yy = dim[0] - header_lines
+        xx = dim[1]
+
+        lines = table_str.split("\n")
+        lines = lines[:yy]
+        lines = [line[:xx] for line in lines]
+
+        table_str = "\n".join(lines)
+        return table_str
 
     def draw_path_coin_to_cursor(self, coin):
         if coin is None:
