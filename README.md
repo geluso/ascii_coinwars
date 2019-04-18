@@ -1,4 +1,12 @@
 # COIN WARS
+## Installation
+Install requirements and run python on the coinwars directory at repo root
+level beside README.md.
+
+* `pip3 install -r requirements.txt`
+* `python3 coinwars/`
+
+## Summary
 Here's a fun text-based version of a game called Coin Wars. Coin Wars
 is a physical, tactile, turn-based, strategy game. That's to say: players
 take turns flicking coins trying to knock their opponent's pieces off a
