@@ -6,6 +6,15 @@ level beside README.md.
 * `pip3 install -r requirements.txt`
 * `python3 coinwars/`
 
+## Known Bugs
+Sorry, the app crashes if the terminal window is not big enough or
+when the window is resized. 
+
+* `_curses.error: addwstr() returned ERR` occurs when you start a game and
+  there's not enough room. Decrease your terminal text size or make your window
+  bigger to make room for what the game expects!
+* `_curses.error: no input` occurs when you resize the window.
+
 ## Summary
 Here's a fun text-based version of a game called Coin Wars. Coin Wars
 is a physical, tactile, turn-based, strategy game. That's to say: players
