@@ -1,6 +1,6 @@
 # COIN WARS
 Here's a fun text-based version of a game called Coin Wars. Coin Wars
-is a physical, tactile, turn-based, stategy game. That's to say: players
+is a physical, tactile, turn-based, strategy game. That's to say: players
 take turns flicking coins trying to knock their opponent's pieces off a
 table. There's two teams: heads and tails. The last player with coins still on
 the table wins.
